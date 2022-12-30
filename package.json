@@ -1,0 +1,25 @@
+{
+  "name": "just-todo-it",
+  "version": "1.0.0",
+  "description": "A project outlined by The Odin Project https://www.theodinproject.com/lessons/node-path-javascript-todo-list",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jnuguid1/just-todo-it.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jnuguid1/just-todo-it/issues"
+  },
+  "homepage": "https://github.com/jnuguid1/just-todo-it#readme",
+  "devDependencies": {
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  }
+}
