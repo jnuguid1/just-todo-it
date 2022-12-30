@@ -1,10 +1,20 @@
 :root {
   --primary-color: #BEF264;
   --secondary-color: #F8FFE8;
-  --grey-text-color: #B9B9B9;
+  --grey-text-color: #9a9a9a;
   --card-color: #FFFFFF;
+  --pointer: pointer;
   font-size: 16px;
-  font-family: 'Robot', 'sans-serif';
+  font-family: 'Roboto', 'sans-serif';
+}
+
+body, h1, h2, p, ul, li {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
 }
 
 .font-large {
@@ -35,8 +45,55 @@
   color: var(--grey-text-color);
 }
 
+.p-24 {
+  padding: 24px;
+}
+
+.mb-16 {
+  margin-bottom: 16px;
+}
+
 .flex-center {
   display: flex;
   justify-content: center;
   align-content: center;
+}
+
+#container{
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  height: 100vh;
+}
+
+#sidebar h1 {
+  margin-bottom: 84px;
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+}
+
+#projects {
+  margin-bottom: 32px;
+}
+
+#projects li {
+  cursor: var(--pointer);
+  font-size: 1.25rem;
+  margin-left: 24px;
+}
+
+#sidebar h2 {
+  font-weight: 500;
+}
+
+#sidebar h2:nth-child(n+1) {
+  margin-bottom: 16px;
+}
+
+.todo-card {
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);;
 }
