@@ -2,7 +2,7 @@
   "name": "just-todo-it",
   "version": "1.0.0",
   "description": "A project outlined by The Odin Project https://www.theodinproject.com/lessons/node-path-javascript-todo-list",
-  "main": "index.js",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack"
