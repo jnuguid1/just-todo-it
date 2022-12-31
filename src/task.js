@@ -1,11 +1,14 @@
 const taskFactory = (name) => {
   let isCompleted = false;
   
-  const editName = () => {};
-  const toggleComplete = () => {};
-  const removeTask = () => {};
+  const editName = (newName) => {
+    name = newName;
+  };
+  const toggleComplete = () => {
+    isCompleted = !isCompleted;
+  };
 
-  return { name, isCompleted, editName, toggleComplete, removeTask};
+  return { name, isCompleted, editName, toggleComplete};
 };
 
 export default taskFactory;

@@ -1,35 +1,38 @@
 const projectFactory = (name, description) => {
   const todoList = []; 
-  
-  const deleteProject = () => {
-
-  };
 
   const copyProject = () => {
-
+    return projectFactory(name, description);
   };
 
-  const archiveProject = () => {
-    
+  const editName = (newName) => {
+    name = newName;
   };
 
-  const editName = () => {
-
+  const editDescription = (newDesc) => {
+    description = newDesc;
   };
 
-  const editDescription = () => {
+  const addTodo = (todo) => {
+    todoList.push(todo);
+  }
 
+  const removeTodo = (todo) => {
+    const index = todoList.indexOf(todo);
+    if (index > -1) {
+      todoList.splice(index, 1);
+    }
   };
 
   return { 
     name,
     description,
     todoList,
-    deleteProject,
     copyProject,
-    archiveProject,
     editName,
-    editDescription
+    editDescription,
+    addTodo,
+    removeTodo
   };
 };
 

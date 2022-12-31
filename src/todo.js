@@ -1,11 +1,27 @@
 const todoFactory = (title, description, dueDate, priority, notes) => {
   const checkList = [];
 
-  const editTitle = () => {};
-  const editDescription = () => {};
-  const editDueDate = () => {};
-  const editNotes = () => {};
-  const addToChecklist = () => {};
+  const editTitle = (newTitle) => {
+    title = newTitle;
+  };
+  const editDescription = (newDesc) => {
+    description = newDesc;
+  };
+  const editDueDate = (newDueDate) => {
+    dueDate = newDueDate;
+  };
+  const editNotes = (newNotes) => {
+    notes = newNotes;
+  };
+  const addTask = (task) => {
+    checkList.push(task);
+  };
+  const removeTask = (task) => {
+    const index = checkList.indexOf(task);
+    if (index > -1) {
+      checkList.splice(index, 1);
+    }
+  };
   
   return {
     title,
@@ -18,7 +34,8 @@ const todoFactory = (title, description, dueDate, priority, notes) => {
     editDescription,
     editDueDate,
     editNotes,
-    addToChecklist
+    addTask,
+    removeTask
   }
 };
 
