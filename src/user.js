@@ -5,6 +5,19 @@ import projectFactory from "./project";
 const user = (() => {
   const projects = [];
 
+  const getProjects = () => {
+    return projects;
+  }
+  const addProject = (project) => {
+    projects.push(project);
+  };
+  const removeProject = (project) => {
+    const index = projects.indexOf(project);
+    if (index > -1) {
+      projects.splice(index, 1);
+    }
+  };
+
   const initializeUser = () => {
     const projectName = 'Your Project';
     const projectDesc = 'This is your project. This text blurb is your project description, put anything here.';
@@ -23,19 +36,6 @@ const user = (() => {
   };
 
   initializeUser();
-
-  const getProjects = () => {
-    return projects;
-  }
-  const addProject = (project) => {
-    projects.push(project);
-  };
-  const removeProject = (project) => {
-    const index = projects.indexOf(project);
-    if (index > -1) {
-      projects.splice(index, 1);
-    }
-  };
 
   return { getProjects, addProject, removeProject };
 })();
