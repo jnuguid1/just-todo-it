@@ -1,6 +1,24 @@
 const todoFactory = (title, description, dueDate, priority, notes) => {
   const checkList = [];
 
+  const getTitle = () => {
+    return title;
+  };
+  const getDescription = () => {
+    return description;
+  };
+  const getDueDate = () => {
+    return dueDate;
+  };
+  const getPriority = () => {
+    return priority;
+  };
+  const getNotes = () => {
+    return notes;
+  };
+  const getCheckList = () => {
+    return checkList;
+  }
   const editTitle = (newTitle) => {
     title = newTitle;
   };
@@ -24,12 +42,12 @@ const todoFactory = (title, description, dueDate, priority, notes) => {
   };
   
   return {
-    title,
-    description,
-    dueDate,
-    priority,
-    notes,
-    checkList,
+    getTitle,
+    getDescription,
+    getDueDate,
+    getPriority,
+    getNotes,
+    getCheckList,
     editTitle,
     editDescription,
     editDueDate,

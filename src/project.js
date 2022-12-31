@@ -5,6 +5,18 @@ const projectFactory = (name, description) => {
     return projectFactory(name, description);
   };
 
+  const getName = () => {
+    return name;
+  };
+
+  const getDescription = () => {
+    return description;
+  };
+
+  const getTodoList = () => {
+    return todoList;
+  };
+
   const editName = (newName) => {
     name = newName;
   };
@@ -25,9 +37,9 @@ const projectFactory = (name, description) => {
   };
 
   return { 
-    name,
-    description,
-    todoList,
+    getName,
+    getDescription,
+    getTodoList,
     copyProject,
     editName,
     editDescription,
