@@ -1,3 +1,5 @@
+import controller from "./controller";
+
 const view = (() => {
   const projects = document.querySelector('#projects');
   const addProjectButton = document.querySelector('#add-project-btn');
@@ -119,12 +121,21 @@ const view = (() => {
     todoList.appendChild(addTodoButton);
   }
 
+  const addProjectEvent = (handler) => {
+    handler('new project', 'new desc');
+  }
+
+  const bindAddProject = (handler) => {
+    addProjectButton.addEventListener('click', addProjectEvent(handler));
+  }
+
   return { 
       setProjectTitle,
       setProjectDescription,
       addTodoCard,
       setProjectListItem,
       setAddTodoButton,
+      bindAddProject
     }
 })();
 

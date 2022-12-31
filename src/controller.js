@@ -1,4 +1,5 @@
 import user from "./user";
+import projectFactory from './project'
 import view from './view';
 
 const controller = (() => {
@@ -41,6 +42,13 @@ const controller = (() => {
     initializeSidebarView();
     initializeProjectView();
   };
+
+  const handleAddProject = (name, desc) => {
+    user.addProject(projectFactory(name, desc));
+    console.log({user});
+  };
+
+  view.bindAddProject(handleAddProject);
 
   return { initializeView };
 })();
