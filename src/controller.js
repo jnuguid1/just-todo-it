@@ -42,7 +42,7 @@ const controller = (() => {
     initializeProjectView();
   };
 
-  initializeView();
+  return { initializeView };
 })();
 
 export default controller;
