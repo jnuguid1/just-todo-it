@@ -1,2 +1,2 @@
 import './index.css';
-import viewController from './view-controller';
+import controller from './controller';

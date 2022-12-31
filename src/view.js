@@ -1,17 +1,13 @@
-import user from "./user";
-
-const viewController = (() => {
+const view = (() => {
   const projects = document.querySelector('#projects');
   const addProjectButton = document.querySelector('#add-project-btn');
   const projectContainer = document.querySelector('#project-container');
   const todoList = document.querySelector('#todo-list');
 
-  const initializeSidebarView = () => {
-    user.getProjects().forEach(project => {
-      const projectListItem = document.createElement('li');
-      projectListItem.textContent = project.getName();
-      projects.insertBefore(projectListItem, addProjectButton);
-    });
+  const setProjectListItem = (project) => {
+    const projectListItem = document.createElement('li');
+    projectListItem.textContent = project;
+    projects.insertBefore(projectListItem, addProjectButton);
   };
 
   const setProjectTitle = (title) => {
@@ -62,7 +58,7 @@ const viewController = (() => {
 
   const setTask = (task, container) => {
     const taskName = document.createElement('p');
-    taskName.textContent = task.getName();
+    taskName.textContent = task;
     container.appendChild(taskName);
   };
 
@@ -101,22 +97,15 @@ const viewController = (() => {
 
   const addTodoCard = (todo) => {
     const todoCard = document.createElement('div');
-    const tasks = todo.getCheckList();
     todoCard.classList.add('todo-card');
-    setTodoTitle(todo.getTitle(), todoCard);
-    setTodoStatus(todo.getDueDate(), todo.getPriority(), todoCard);
-    setTodoDescription(todo.getDescription(), todoCard);
-    setTodoTasks(tasks, todoCard);
+    setTodoTitle(todo.title, todoCard);
+    setTodoStatus(todo.due, todo.priority, todoCard);
+    setTodoDescription(todo.desc, todoCard);
+    setTodoTasks(todo.tasks, todoCard);
     setAddTaskButton(todoCard);
-    setNotes(todo.getNotes(), todoCard);
+    setNotes(todo.notes, todoCard);
 
     todoList.appendChild(todoCard);
-  };
-
-  const setTodos = (list) => {
-    list.forEach(todo => {
-      addTodoCard(todo);
-    });
   };
 
   const setAddTodoButton = () => {
@@ -130,22 +119,13 @@ const viewController = (() => {
     todoList.appendChild(addTodoButton);
   }
 
-  const initializeProjectView = () => {
-    if (user.getProjects().length !== 0) {
-      const project = user.getProjects()[0];
-      setProjectTitle(project.getName());
-      setProjectDescription(project.getDescription());
-      setTodos(project.getTodoList());
-      setAddTodoButton();
+  return { 
+      setProjectTitle,
+      setProjectDescription,
+      addTodoCard,
+      setProjectListItem,
+      setAddTodoButton,
     }
-  };
-
-  const initializeView = () => {
-    initializeSidebarView();
-    initializeProjectView();
-  };
-
-  initializeView();
 })();
 
-export default viewController;
+export default view;
