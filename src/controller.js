@@ -24,17 +24,13 @@ const controller = (() => {
     });
   };
 
-  const addTodoButton = () => {
-    view.setAddTodoButton();
-  }
-
   const initializeProjectView = () => {
     if (user.getProjects().length !== 0) {
       const project = user.getProjects()[0];
       view.setProjectTitle(project.getName());
       view.setProjectDescription(project.getDescription());
       addTodos(project.getTodoList());
-      addTodoButton();
+      view.setAddTodoButton();
     }
   };
 
