@@ -114,9 +114,8 @@ li {
   margin-top: 32px;
 }
 
-#add-project-btn::selection {
-  background: none;
-  color: var(--grey-text-color);
+#add-project-btn {
+  user-select: none;
 }
 
 #todo-list {
@@ -146,10 +145,10 @@ li {
 .checklist-circle {
   width: 18px;
   height: 18px;
-  background-color: var(--card-color);
   border-radius: 50%;
   border-color: var(--light-grey);
   border-style: solid;
+  cursor: var(--pointer);
 }
 
 .checklist-divide {
@@ -163,17 +162,29 @@ li {
 }
 
 .add-task-button {
-  color: var(--light-grey);
+  color: var(--grey-text-color);
+  cursor: var(--pointer);
   margin-top: 16px;
-  margin-bottom: 32px;
+  user-select: none;
+}
+
+.task-form {
+  margin-top: 12px;
+  margin-right: 8px;
+}
+
+.notes-heading {
+  margin-top: 32px;
 }
 
 .add-todo-button {
   border-radius: 10px;
   padding: 12px;
   background-color: rgb(229, 229, 229);
-  width: 135px;
+  width: 103px;
   height: 30px;
+  user-select: none;
+  cursor: var(--pointer);
 }
 
 .task-container {
@@ -196,4 +207,16 @@ li {
 #project-form-container button {
   padding: 0px 8px;
   height: 37px
+}
+
+.circle-filled {
+  background-color: var(--primary-color);
+}
+
+.task-done {
+  text-decoration: line-through;
+}
+
+.hidden {
+  display: none;
 }

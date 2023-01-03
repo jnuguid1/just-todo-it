@@ -63,22 +63,31 @@ const view = (() => {
     const taskName = document.createElement('p');
     taskName.textContent = task;
     container.appendChild(taskName);
+    return taskName;
+  };
+
+  const setTaskCheckCircle = (container, task) => {
+    const checklistCircle = document.createElement('div');
+    checklistCircle.classList.add('checklist-circle');
+    container.insertBefore(checklistCircle, task);
+    checklistCircle.addEventListener('click', () => {
+      checklistCircle.classList.toggle('circle-filled');
+      task.classList.toggle('task-done');
+    });
   };
 
   const setTodoTasks = (tasks, todoCard) => {
     tasks.forEach(task => {
       const taskContainer = document.createElement('div');
       taskContainer.classList.add('task-container');
-      const checklistCircle = document.createElement('div');
-      checklistCircle.classList.add('checklist-circle');
-      taskContainer.appendChild(checklistCircle);
+      const taskName = setTask(task, taskContainer);
+      setTaskCheckCircle(taskContainer, taskName);
       todoCard.appendChild(taskContainer);
       const divider = document.createElement('div');
       const hr = document.createElement('hr');
       divider.appendChild(hr);
       divider.classList.add('checklist-divide');
       todoCard.appendChild(divider);
-      setTask(task, taskContainer);
     })
   };
 
@@ -86,11 +95,26 @@ const view = (() => {
     const addTaskButton = document.createElement('div');
     addTaskButton.classList.add('add-task-button');
     addTaskButton.textContent = 'Add Task';
+    addTaskButton.classList.add('p')
     todoCard.appendChild(addTaskButton);
+    const taskFormContainer = document.createElement('div');
+    taskFormContainer.classList.add('hidden');
+    const taskForm = document.createElement('input');
+    taskForm.placeholder = 'Enter task name';
+    taskForm.classList.add('task-form');
+    taskFormContainer.appendChild(taskForm);
+    const taskSubmitButton = document.createElement('button');
+    taskSubmitButton.textContent = 'SUBMIT';
+    taskFormContainer.appendChild(taskSubmitButton);
+    todoCard.appendChild(taskFormContainer);
+    addTaskButton.addEventListener('click', () => {
+      taskFormContainer.classList.toggle('hidden');
+    });
   }
 
   const setNotes = (notes, todoCard) => {
     const notesHeading = document.createElement('h3');
+    notesHeading.classList.add('notes-heading');
     notesHeading.textContent = 'Notes';
     todoCard.appendChild(notesHeading);
     const notesText = document.createElement('p');
@@ -113,11 +137,12 @@ const view = (() => {
 
   const setAddTodoButton = () => {
     const addTodoButton = document.createElement('div');
+    addTodoButton.id = 'add-todo-button';
     addTodoButton.classList.add('add-todo-button');
     const addTodoButtonText = document.createElement('p');
     addTodoButtonText.classList.add('font-medium');
     addTodoButton.classList.add('grey-font')
-    addTodoButtonText.textContent = 'Add Section';
+    addTodoButtonText.textContent = 'Add Todo';
     addTodoButton.appendChild(addTodoButtonText);
     todoList.appendChild(addTodoButton);
   };

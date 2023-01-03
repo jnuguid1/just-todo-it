@@ -39,6 +39,10 @@ const controller = (() => {
     initializeProjectView();
   };
 
+  const addSubmitProjectEvent = () => {
+    view.bindSubmitProject(handleSubmitProject);
+  };
+
   const onProjectListChange = () => {
     const projects = user.getProjects();
     const projectName = projects[projects.length-1].getName();
@@ -49,11 +53,7 @@ const controller = (() => {
     const desc = 'This is your project. This text blurb is your project description, put anything here.';
     user.addProject(projectFactory(name, desc));
     
-  };
-
-  const addSubmitProjectEvent = () => {
-    view.bindSubmitProject(handleSubmitProject);
-  };
+  };  
   
   view.bindAddProject(addSubmitProjectEvent);
   user.bindProjectListChanged(onProjectListChange);
