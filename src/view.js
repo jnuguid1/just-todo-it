@@ -1,5 +1,3 @@
-import controller from "./controller";
-
 const view = (() => {
   const sidebar = document.querySelector('#sidebar');
   const projects = document.querySelector('#projects');
@@ -7,6 +5,7 @@ const view = (() => {
   const projectContainer = document.querySelector('#project-container');
   const todoList = document.querySelector('#todo-list');
   const settings = document.querySelector('#settings');
+  let showProjectFormEvent = () => {};
 
   const setProjectListItem = (project) => {
     const projectListItem = document.createElement('li');
@@ -144,7 +143,7 @@ const view = (() => {
       formContainer.appendChild(formSubmit);
 
       sidebar.insertBefore(formContainer, settings);
-      controller.addSubmitProjectEvent();
+      showProjectFormEvent();
     }
   };
 
@@ -157,7 +156,11 @@ const view = (() => {
     projectFormContainer.style.display = 'none';
   };
 
-  const bindAddProject = (handler) => {
+  const bindAddProject = (callback) => {
+    showProjectFormEvent = callback;
+  }
+
+  const bindSubmitProject = (handler) => {
     const submitButton = document.querySelector('#submit-project-button');
     submitButton.addEventListener('click', () => {
       const projectNameForm = document.querySelector('#project-name-form');
@@ -173,6 +176,7 @@ const view = (() => {
       addTodoCard,
       setProjectListItem,
       setAddTodoButton,
+      bindSubmitProject,
       bindAddProject,
       toggleProjectForm
     }

@@ -44,7 +44,8 @@ const controller = (() => {
   };
 
   const onProjectListChange = () => {
-    const projectName = user.getProjects()[user.getProjects().length-1].getName();
+    const projects = user.getProjects();
+    const projectName = projects[projects.length-1].getName();
     view.setProjectListItem(projectName);
   }
 
@@ -55,12 +56,13 @@ const controller = (() => {
   };
 
   const addSubmitProjectEvent = () => {
-    view.bindAddProject(handleSubmitProject);
+    view.bindSubmitProject(handleSubmitProject);
   };
   
+  view.bindAddProject(addSubmitProjectEvent);
   user.bindProjectListChanged(onProjectListChange);
 
-  return { initializeView, addSubmitProjectEvent };
+  return { initializeView };
 })();
 
 export default controller;
