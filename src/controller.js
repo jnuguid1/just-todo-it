@@ -43,14 +43,24 @@ const controller = (() => {
     initializeProjectView();
   };
 
-  const handleAddProject = (name, desc) => {
+  const onProjectListChange = () => {
+    const projectName = user.getProjects()[user.getProjects().length-1].getName();
+    view.setProjectListItem(projectName);
+  }
+
+  const handleSubmitProject = (name) => {
+    const desc = 'This is your project. This text blurb is your project description, put anything here.';
     user.addProject(projectFactory(name, desc));
-    console.log({user});
+    
   };
 
-  view.bindAddProject(handleAddProject);
+  const addSubmitProjectEvent = () => {
+    view.bindAddProject(handleSubmitProject);
+  };
+  
+  user.bindProjectListChanged(onProjectListChange);
 
-  return { initializeView };
+  return { initializeView, addSubmitProjectEvent };
 })();
 
 export default controller;

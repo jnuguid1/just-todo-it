@@ -1,10 +1,12 @@
 import controller from "./controller";
 
 const view = (() => {
+  const sidebar = document.querySelector('#sidebar');
   const projects = document.querySelector('#projects');
   const addProjectButton = document.querySelector('#add-project-btn');
   const projectContainer = document.querySelector('#project-container');
   const todoList = document.querySelector('#todo-list');
+  const settings = document.querySelector('#settings');
 
   const setProjectListItem = (project) => {
     const projectListItem = document.createElement('li');
@@ -119,15 +121,51 @@ const view = (() => {
     addTodoButtonText.textContent = 'Add Section';
     addTodoButton.appendChild(addTodoButtonText);
     todoList.appendChild(addTodoButton);
-  }
+  };
 
-  const addProjectEvent = (handler) => {
-    handler('new project', 'new desc');
-  }
+  const toggleProjectForm = () => {
+    const projectFormContainer = document.querySelector('#project-form-container');
+    if (projectFormContainer) {
+      (projectFormContainer.style.display === 'none') ? 
+        projectFormContainer.style.display = 'flex' :
+        projectFormContainer.style.display = 'none';
+    } else {
+      const formContainer = document.createElement('div');
+      formContainer.setAttribute('id', 'project-form-container');
+
+      const nameForm = document.createElement('input');
+      nameForm.setAttribute('type', 'text');
+      nameForm.setAttribute('id', 'project-name-form');
+      nameForm.setAttribute('placeholder', 'Enter the project name');
+      const formSubmit = document.createElement('button');
+      formSubmit.setAttribute('id', 'submit-project-button');
+      formSubmit.textContent = 'ENTER';
+      formContainer.appendChild(nameForm);
+      formContainer.appendChild(formSubmit);
+
+      sidebar.insertBefore(formContainer, settings);
+      controller.addSubmitProjectEvent();
+    }
+  };
+
+  addProjectButton.addEventListener('click', toggleProjectForm);
+
+  const resetProjectSubmitForm = () => {
+    const projectNameForm = document.querySelector('#project-name-form');
+    projectNameForm.input = '';
+    const projectFormContainer = document.querySelector('#project-form-container');
+    projectFormContainer.style.display = 'none';
+  };
 
   const bindAddProject = (handler) => {
-    addProjectButton.addEventListener('click', addProjectEvent(handler));
-  }
+    const submitButton = document.querySelector('#submit-project-button');
+    submitButton.addEventListener('click', () => {
+      const projectNameForm = document.querySelector('#project-name-form');
+      const projectName = projectNameForm.value;
+      handler(projectName);
+      resetProjectSubmitForm();
+    });
+  };
 
   return { 
       setProjectTitle,
@@ -135,7 +173,8 @@ const view = (() => {
       addTodoCard,
       setProjectListItem,
       setAddTodoButton,
-      bindAddProject
+      bindAddProject,
+      toggleProjectForm
     }
 })();
 

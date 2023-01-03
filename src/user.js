@@ -4,12 +4,15 @@ import projectFactory from "./project";
 
 const user = (() => {
   const projects = [];
+  let onProjectsListChanged = () => {};
 
   const getProjects = () => {
     return projects;
   }
   const addProject = (project) => {
     projects.push(project);
+
+    onProjectsListChanged();
   };
   const removeProject = (project) => {
     const index = projects.indexOf(project);
@@ -35,9 +38,13 @@ const user = (() => {
     addProject(firstProject);
   };
 
+  const bindProjectListChanged = (callback) => {
+    onProjectsListChanged = callback;
+  }
+
   initializeUser();
 
-  return { getProjects, addProject, removeProject };
+  return { getProjects, addProject, removeProject, bindProjectListChanged };
 })();
 
 export default user;
