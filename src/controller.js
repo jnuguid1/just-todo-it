@@ -6,12 +6,18 @@ import view from './view';
 
 const controller = (() => {
   let currentProjectId;
+  let projectIdCounter = 0;
+
+  const incrementProjectIdCounter = () => {
+    projectIdCounter += 1;
+  }
 
   const initializeUser = () =>{
     const projectName = 'Your Project';
     const projectDesc = 'This is your project. This text blurb is your project description, put anything here.';
-    const projectId = 0;
+    const projectId = projectIdCounter;
     currentProjectId = projectId;
+    incrementProjectIdCounter();
     const firstProject = projectFactory(projectName, projectDesc, projectId);
     firstProject.bindOnTodoListChanged(onTodoListChanged);
     const todoTitle = 'To do';
@@ -29,7 +35,7 @@ const controller = (() => {
 
   const initializeSidebarView = () => {
     user.getProjects().forEach(project => {
-      view.setProjectListItem(project.getName());
+      view.setProjectListItem(project.getName(), project.getId());
     });
   };
 
@@ -43,6 +49,19 @@ const controller = (() => {
       addTodos(project.getTodoList());
     }
   };
+
+  const loadProject = (id) => {
+    view.resetProjectView();
+    const projects = user.getProjects();
+    const projectTarget = projects.find(project => project.getId() === id);
+    currentProjectId = id;
+    view.setCurrentProjectId(projectTarget.getId());
+    view.setProjectTitle(projectTarget.getName());
+    view.setProjectDescription(projectTarget.getDescription());
+    view.setAddTodoButton();
+    //view.bindAddTodo(addSubmitTodoEvent);
+    addTodos(projectTarget.getTodoList());
+  }
 
   const initializeView = () => {
     initializeSidebarView();
@@ -88,9 +107,15 @@ const controller = (() => {
 
   const onProjectListChange = () => {
     const projects = user.getProjects();
-    const projectName = projects[projects.length-1].getName();
-    view.setProjectListItem(projectName);
+    const projectTarget = projects[projects.length-1];
+    const projectName = projectTarget.getName();
+    const projectId = projectTarget.getId();
+    view.setProjectListItem(projectName, projectId);
   }
+
+  const onProjectSwitch = (id) => {
+    loadProject(id);
+  };
 
   const handleSubmitTodo = (todo) => {
     const currentProject = user.getProjectById(todo.projectId);
@@ -106,14 +131,17 @@ const controller = (() => {
 
   const handleSubmitProject = (name) => {
     const desc = 'This is your project. This text blurb is your project description, put anything here.';
-    user.addProject(projectFactory(name, desc));
-    
+    const newProject = projectFactory(name, desc, projectIdCounter);
+    newProject.bindOnTodoListChanged(onTodoListChanged);
+    user.addProject(newProject);
+    incrementProjectIdCounter();
   };  
   
   initializeUser();
   view.bindAddTodo(addSubmitTodoEvent);
   view.bindAddProject(addSubmitProjectEvent);
   user.bindProjectListChanged(onProjectListChange);
+  view.bindChangeProject(onProjectSwitch);
 
   return { initializeView };
 })();

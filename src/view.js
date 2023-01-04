@@ -4,10 +4,11 @@ const view = (() => {
   const projects = document.querySelector('#projects');
   const addProjectButton = document.querySelector('#add-project-btn');
   const projectContainer = document.querySelector('#project-container');
-  const todoList = document.querySelector('#todo-list');
+  let todoList = document.querySelector('#todo-list');
   const settings = document.querySelector('#settings');
   let showProjectFormEvent = () => {};
   let setTodoFormEvent = () => {};
+  let setProjectSwitchEvent = () => {};
 
   function createDiv() {
     const div = document.createElement('div');
@@ -90,10 +91,26 @@ const view = (() => {
     currentProjectId = id;
   };
 
-  const setProjectListItem = (project) => {
+  const resetProjectView = () => {
+    let element = projectContainer.lastElementChild;
+    while (element) {
+      projectContainer.removeChild(element);
+      element = projectContainer.lastElementChild;
+    }
+    projectContainer.appendChild(createIdDiv('todo-list'));
+    todoList = document.querySelector('#todo-list');
+  };
+
+  const setProjectListItem = (project, projectId) => {
     const projectListItem = document.createElement('li');
+    projectListItem.setAttribute('project-id', projectId);
     projectListItem.textContent = project;
     projects.insertBefore(projectListItem, addProjectButton);
+    projectListItem.addEventListener('click', () => {
+      if (projectId !== currentProjectId) {
+        setProjectSwitchEvent(projectId);
+      }
+    });
   };
 
   const setProjectTitle = (title) => {
@@ -235,6 +252,26 @@ const view = (() => {
     projectFormContainer.style.display = 'none';
   };
 
+  const bindChangeProject = (callback) => {
+    setProjectSwitchEvent = callback;
+  }
+
+  const bindSubmitTodo = (handler) => {
+    const submitButton = document.querySelector('#todo-submit-btn');
+    submitButton.addEventListener('click', () => {
+      const todo = {
+        projectId: currentProjectId,
+        title: document.querySelector('#todo-title').value,
+        due: document.querySelector('#due-date-input').value,
+        priority: document.querySelector('#priority-input').value,
+        desc: document.querySelector('#description-textarea').value,
+        notes: document.querySelector('#notes-input').value
+      };
+      handler(todo);
+      resetTodoSubmitForm();
+    });
+  }
+
   const bindAddTodo = (callback) => {
     setTodoFormEvent = callback;
   }
@@ -253,25 +290,10 @@ const view = (() => {
     });
   };
 
-  const bindSubmitTodo = (handler) => {
-    const submitButton = document.querySelector('#todo-submit-btn');
-    submitButton.addEventListener('click', () => {
-      const todo = {
-        projectId: currentProjectId,
-        title: document.querySelector('#todo-title').value,
-        due: document.querySelector('#due-date-input').value,
-        priority: document.querySelector('#priority-input').value,
-        desc: document.querySelector('#description-textarea').value,
-        notes: document.querySelector('#notes-input').value
-      };
-      handler(todo);
-      resetTodoSubmitForm();
-    });
-  }
-
   addProjectButton.addEventListener('click', toggleProjectForm);
 
   return { 
+      resetProjectView,
       setCurrentProjectId,
       setProjectTitle,
       setProjectDescription,
@@ -282,7 +304,8 @@ const view = (() => {
       bindAddProject,
       toggleProjectForm,
       bindAddTodo,
-      bindSubmitTodo
+      bindSubmitTodo,
+      bindChangeProject
     }
 })();
 
