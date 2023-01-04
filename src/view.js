@@ -7,6 +7,77 @@ const view = (() => {
   const settings = document.querySelector('#settings');
   let showProjectFormEvent = () => {};
 
+  function createDiv() {
+    const div = document.createElement('div');
+    for (let i = 0; i < arguments.length; i++) {
+      div.classList.add(`${arguments[i]}`);
+    }
+    return div;
+  };
+
+  function createIdDiv(id) {
+    const div = document.createElement('div');
+    div.id = id;
+    for (let i = 1; i < arguments.length; i++) {
+      div.classList.add(`${arguments[i]}`);
+    }
+    return div;
+  };
+  
+  const createInputForm = (id, placeholder, container) => {
+    const input = document.createElement('input');
+    if (id !== 'none') {
+      input.id = id;
+    }
+    input.placeholder = placeholder;
+    container.appendChild(input);
+    return input;
+  };
+
+  const createTextAreaForm = (id, placeholder, container) => {
+    const input = document.createElement('textarea');
+    input.id = id;
+    input.placeholder = placeholder;
+    container.appendChild(input);
+    return input;
+  };
+
+  function createButtonForm(element, id, text, container) {
+    let btn;
+    if (element === 'div') {
+      btn = document.createElement('div');
+    } else if (element === 'button') {
+      btn = document.createElement('button');
+    }
+    btn.id = id;
+    btn.textContent = text;
+    for (let i = 4; i < arguments.length; i++) {
+      btn.classList.add(`${arguments[i]}`);
+    }
+    container.appendChild(btn);
+    return btn;
+  };
+
+  /**
+   * If insertPosition is 'before', argument[4] should be the
+   * node to insert before.
+   * If insertPosition is 'after' and there are classes to add,
+   * argument[4] should be filled with any value.
+   */
+  function createText(container, insertPosition, element, text) {
+    const textElement = document.createElement(`${element}`);
+    textElement.textContent = text;
+    for (let i = 5; i < arguments.length; i++) {
+      textElement.classList.add(`${arguments[i]}`);
+    }
+    if (insertPosition === 'before') {
+      container.insertBefore(textElement, arguments[4]);
+    } else {
+      container.appendChild(textElement);
+    }
+    return textElement;
+  }
+
   const setProjectListItem = (project) => {
     const projectListItem = document.createElement('li');
     projectListItem.textContent = project;
@@ -14,61 +85,35 @@ const view = (() => {
   };
 
   const setProjectTitle = (title) => {
-    const projectName = document.createElement('h2');
-    projectName.classList.add('font-medium');
-    projectName.classList.add('mb-16');
-    projectName.textContent = title;
-    projectContainer.insertBefore(projectName, todoList);
+    createText(projectContainer, 'before', 'h2', title, todoList, 'font-medium', 'mb-16');
   };
 
   const setProjectDescription = (description) => {
-    const projectDescription = document.createElement('p');
-    projectDescription.classList.add('font-regular');
-    projectDescription.classList.add('mb-48');
-    projectDescription.textContent = description;
-    projectContainer.insertBefore(projectDescription, todoList);
+    createText(projectContainer, 'before', 'h2', description, todoList, 'font-regular', 'mb-48');
   };
 
   const setTodoTitle = (title, todoCard) => {
-    const todoTitle = document.createElement('h2');
-    todoTitle.classList.add('font-medium');
-    todoTitle.classList.add('mb-32')
-    todoTitle.textContent = title;
-    todoCard.appendChild(todoTitle);
+    createText(todoCard, 'after', 'h2', title, 'none', 'font-medium', 'mb-32');
   };
 
   const setTodoStatus = (dueDate, priority, todoCard) => {
-    const status = document.createElement('div');
-    status.classList.add('mb-16');
-    status.classList.add('status-container');
-    const todoDueDate = document.createElement('p');
-    todoDueDate.classList.add('font-small');
-    todoDueDate.textContent = `Due: ${dueDate}`;
-    status.appendChild(todoDueDate);
-    const todoPriority = document.createElement('p');
-    todoPriority.classList.add('font-small');
-    todoPriority.textContent = priority;
-    status.appendChild(todoPriority);
+    const status = createDiv('mb-16', 'status-container')
+    createText(status, 'after', 'p', `Due: ${dueDate}`, 'none', 'font-small');
+    createText(status, 'after', 'p', priority, 'none', 'font-small');
     todoCard.appendChild(status);
   };
 
   const setTodoDescription = (desc, todoCard) => {
-    const todoDesc = document.createElement('p');
-    todoDesc.classList.add('mb-32');
-    todoDesc.textContent = desc;
-    todoCard.appendChild(todoDesc);
+    createText(todoCard, 'after', 'p', desc, 'none', 'mb-32');
   };
 
   const setTask = (task, container) => {
-    const taskName = document.createElement('p');
-    taskName.textContent = task;
-    container.appendChild(taskName);
+    const taskName = createText(container, 'after', 'p', task);
     return taskName;
   };
 
   const setTaskCheckCircle = (container, task) => {
-    const checklistCircle = document.createElement('div');
-    checklistCircle.classList.add('checklist-circle');
+    const checklistCircle = createDiv('checklist-circle');
     container.insertBefore(checklistCircle, task);
     checklistCircle.addEventListener('click', () => {
       checklistCircle.classList.toggle('circle-filled');
@@ -78,34 +123,22 @@ const view = (() => {
 
   const setTodoTasks = (tasks, todoCard) => {
     tasks.forEach(task => {
-      const taskContainer = document.createElement('div');
-      taskContainer.classList.add('task-container');
+      const taskContainer = createDiv('task-container')
       const taskName = setTask(task, taskContainer);
       setTaskCheckCircle(taskContainer, taskName);
       todoCard.appendChild(taskContainer);
-      const divider = document.createElement('div');
+      const divider = createDiv('checklist-divide');
       const hr = document.createElement('hr');
       divider.appendChild(hr);
-      divider.classList.add('checklist-divide');
       todoCard.appendChild(divider);
     })
   };
 
   const setAddTaskButton = (todoCard) => {
-    const addTaskButton = document.createElement('div');
-    addTaskButton.classList.add('add-task-button');
-    addTaskButton.textContent = 'Add Task';
-    addTaskButton.classList.add('p')
-    todoCard.appendChild(addTaskButton);
-    const taskFormContainer = document.createElement('div');
-    taskFormContainer.classList.add('hidden');
-    const taskForm = document.createElement('input');
-    taskForm.placeholder = 'Enter task name';
-    taskForm.classList.add('task-form');
-    taskFormContainer.appendChild(taskForm);
-    const taskSubmitButton = document.createElement('button');
-    taskSubmitButton.textContent = 'SUBMIT';
-    taskFormContainer.appendChild(taskSubmitButton);
+    const addTaskButton = createButtonForm('div', 'none', 'Add Task', todoCard, 'p', 'add-task-button');
+    const taskFormContainer = createDiv('hidden');
+    const taskForm = createInputForm('none', 'Enter task name', taskFormContainer);
+    const taskSubmitButton = createButtonForm('button', 'none', 'SUBMIT', taskFormContainer);
     todoCard.appendChild(taskFormContainer);
     addTaskButton.addEventListener('click', () => {
       taskFormContainer.classList.toggle('hidden');
@@ -113,18 +146,12 @@ const view = (() => {
   }
 
   const setNotes = (notes, todoCard) => {
-    const notesHeading = document.createElement('h3');
-    notesHeading.classList.add('notes-heading');
-    notesHeading.textContent = 'Notes';
-    todoCard.appendChild(notesHeading);
-    const notesText = document.createElement('p');
-    notesText.textContent = notes;
-    todoCard.appendChild(notesText);
+    createText(todoCard, 'after', 'h3', 'Notes', 'none', 'notes-heading');
+    createText(todoCard, 'after', 'p', notes);
   };
 
   const addTodoCard = (todo) => {
-    const todoCard = document.createElement('div');
-    todoCard.classList.add('todo-card');
+    const todoCard = createDiv('todo-card');
     setTodoTitle(todo.title, todoCard);
     setTodoStatus(todo.due, todo.priority, todoCard);
     setTodoDescription(todo.desc, todoCard);
@@ -135,16 +162,28 @@ const view = (() => {
     todoList.appendChild(todoCard);
   };
 
+  const setTodoForm = (container) => {
+    createInputForm('todo-title', 'Title', container);
+    createInputForm('due-date-input', 'Due Date', container);
+    createInputForm('priority-input', 'Priority', container);
+    createTextAreaForm('description-textarea', 'Description', container);
+    createTextAreaForm('notes-input', 'Notes', container);
+    createButtonForm('button', 'todo-submit-btn', 'SUBMIT', container);
+  };
+
   const setAddTodoButton = () => {
-    const addTodoButton = document.createElement('div');
-    addTodoButton.id = 'add-todo-button';
-    addTodoButton.classList.add('add-todo-button');
-    const addTodoButtonText = document.createElement('p');
-    addTodoButtonText.classList.add('font-medium');
-    addTodoButton.classList.add('grey-font')
-    addTodoButtonText.textContent = 'Add Todo';
-    addTodoButton.appendChild(addTodoButtonText);
-    todoList.appendChild(addTodoButton);
+    const addTodoContainer = createDiv();
+    const todoFormContainer = createIdDiv('todo-form-container', 'hidden');
+    const addTodoButton = createButtonForm('div', 'add-todo-button', 'Add Todo', addTodoContainer, 'add-todo-button', 'grey-font', 'font-medium');
+    setTodoForm(todoFormContainer);
+    addTodoContainer.appendChild(todoFormContainer);
+    todoList.appendChild(addTodoContainer);
+
+    addTodoButton.addEventListener('click', () => {
+      todoFormContainer.style.display === 'flex' ?
+        todoFormContainer.style.display = 'none' :
+        todoFormContainer.style.display = 'flex';
+    })
   };
 
   const toggleProjectForm = () => {
@@ -154,19 +193,9 @@ const view = (() => {
         projectFormContainer.style.display = 'flex' :
         projectFormContainer.style.display = 'none';
     } else {
-      const formContainer = document.createElement('div');
-      formContainer.setAttribute('id', 'project-form-container');
-
-      const nameForm = document.createElement('input');
-      nameForm.setAttribute('type', 'text');
-      nameForm.setAttribute('id', 'project-name-form');
-      nameForm.setAttribute('placeholder', 'Enter the project name');
-      const formSubmit = document.createElement('button');
-      formSubmit.setAttribute('id', 'submit-project-button');
-      formSubmit.textContent = 'ENTER';
-      formContainer.appendChild(nameForm);
-      formContainer.appendChild(formSubmit);
-
+      const formContainer = createIdDiv('project-form-container');
+      const nameForm = createInputForm('project-name-form', 'Enter the project name', formContainer);
+      const formSubmit = createButtonForm('button', 'submit-project-button', 'ENTER', formContainer);
       sidebar.insertBefore(formContainer, settings);
       showProjectFormEvent();
     }

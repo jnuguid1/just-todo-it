@@ -185,6 +185,26 @@ li {
   height: 30px;
   user-select: none;
   cursor: var(--pointer);
+  margin-bottom: 24px;
+}
+
+#todo-form-container {
+  display: none;
+  flex-direction: column;
+  width: 60%;
+}
+
+#todo-form-container input, 
+#todo-form-container textarea {
+  margin-bottom: 12px;
+  font-size: 1rem;
+  padding: 4px;
+}
+
+#todo-form-container button {
+  width: 40%;
+  align-self: center;
+  padding: 8px;
 }
 
 .task-container {
