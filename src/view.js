@@ -24,20 +24,26 @@ const view = (() => {
     return div;
   };
   
-  const createInputForm = (id, placeholder, container) => {
+  function createInputForm(id, placeholder, container) {
     const input = document.createElement('input');
     if (id !== 'none') {
       input.id = id;
     }
     input.placeholder = placeholder;
+    for (let i = 3; i < arguments.length; i++) {
+      input.classList.add(`${arguments[i]}`);
+    }
     container.appendChild(input);
     return input;
   };
 
-  const createTextAreaForm = (id, placeholder, container) => {
+  function createTextAreaForm(id, placeholder, container) {
     const input = document.createElement('textarea');
     input.id = id;
     input.placeholder = placeholder;
+    for (let i = 3; i < arguments.length; i++) {
+      input.classList.add(`${arguments[i]}`);
+    }
     container.appendChild(input);
     return input;
   };
@@ -89,7 +95,7 @@ const view = (() => {
   };
 
   const setProjectDescription = (description) => {
-    createText(projectContainer, 'before', 'h2', description, todoList, 'font-regular', 'mb-48');
+    createText(projectContainer, 'before', 'p', description, todoList, 'font-regular', 'mb-48');
   };
 
   const setTodoTitle = (title, todoCard) => {
@@ -137,7 +143,7 @@ const view = (() => {
   const setAddTaskButton = (todoCard) => {
     const addTaskButton = createButtonForm('div', 'none', 'Add Task', todoCard, 'p', 'add-task-button');
     const taskFormContainer = createDiv('hidden');
-    const taskForm = createInputForm('none', 'Enter task name', taskFormContainer);
+    const taskForm = createInputForm('none', 'Enter task name', taskFormContainer, 'task-form');
     const taskSubmitButton = createButtonForm('button', 'none', 'SUBMIT', taskFormContainer);
     todoCard.appendChild(taskFormContainer);
     addTaskButton.addEventListener('click', () => {
