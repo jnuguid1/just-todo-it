@@ -1,5 +1,6 @@
-const projectFactory = (name, description) => {
-  const todoList = []; 
+const projectFactory = (name, description, id) => {
+  const todoList = [];
+  let onTodoListChanged = () => {};
 
   const copyProject = () => {
     return projectFactory(name, description);
@@ -25,8 +26,13 @@ const projectFactory = (name, description) => {
     description = newDesc;
   };
 
+  const initialAddTodo = (todo) => {
+    todoList.push(todo);
+  };
+
   const addTodo = (todo) => {
     todoList.push(todo);
+    onTodoListChanged();
   }
 
   const removeTodo = (todo) => {
@@ -36,6 +42,18 @@ const projectFactory = (name, description) => {
     }
   };
 
+  const getId = () => {
+    return id;
+  }
+
+  const setId = (newId) => {
+    id = newId;
+  }
+
+  const bindOnTodoListChanged = (callback) => {
+    onTodoListChanged = callback;
+  };
+
   return { 
     getName,
     getDescription,
@@ -43,8 +61,12 @@ const projectFactory = (name, description) => {
     copyProject,
     editName,
     editDescription,
+    initialAddTodo,
     addTodo,
-    removeTodo
+    removeTodo,
+    getId,
+    setId,
+    bindOnTodoListChanged
   };
 };
 
