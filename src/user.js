@@ -4,7 +4,16 @@ import projectFactory from "./project";
 
 const user = (() => {
   const projects = [];
+  let projectIdCounter = 0;
   let onProjectsListChanged = () => {};
+
+  const incrementProjectIdCounter = () => {
+    projectIdCounter += 1;
+  };
+
+  const getProjectIdCounter = () => {
+    return projectIdCounter;
+  };
 
   const getProjects = () => {
     return projects;
@@ -28,7 +37,14 @@ const user = (() => {
     onProjectsListChanged = callback;
   }
 
-  return { getProjects, addProject, removeProject, bindProjectListChanged, getProjectById };
+  return { 
+    getProjects, 
+    addProject, 
+    removeProject, 
+    bindProjectListChanged,
+    getProjectById,
+    incrementProjectIdCounter,
+    getProjectIdCounter };
 })();
 
 export default user;

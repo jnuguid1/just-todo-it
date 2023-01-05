@@ -5,19 +5,14 @@ import taskFactory from "./task";
 import view from './view';
 
 const controller = (() => {
-  let currentProjectId;
-  let projectIdCounter = 0;
+  let currentProjectId = user.getProjectIdCounter();
 
-  const incrementProjectIdCounter = () => {
-    projectIdCounter += 1;
-  }
-
-  const initializeUser = () =>{
+  const initializeUser = () => {
     const projectName = 'Your Project';
     const projectDesc = 'This is your project. This text blurb is your project description, put anything here.';
-    const projectId = projectIdCounter;
-    currentProjectId = projectId;
-    incrementProjectIdCounter();
+    const projectId = user.getProjectIdCounter();
+    currentProjectId = user.getProjectIdCounter();
+    user.incrementProjectIdCounter();
     const firstProject = projectFactory(projectName, projectDesc, projectId);
     firstProject.bindOnTodoListChanged(onTodoListChanged);
     const todoTitle = 'To do';
@@ -59,7 +54,6 @@ const controller = (() => {
     view.setProjectTitle(projectTarget.getName());
     view.setProjectDescription(projectTarget.getDescription());
     view.setAddTodoButton();
-    //view.bindAddTodo(addSubmitTodoEvent);
     addTodos(projectTarget.getTodoList());
   }
 
@@ -131,10 +125,10 @@ const controller = (() => {
 
   const handleSubmitProject = (name) => {
     const desc = 'This is your project. This text blurb is your project description, put anything here.';
-    const newProject = projectFactory(name, desc, projectIdCounter);
+    const newProject = projectFactory(name, desc, user.projectIdCounter());
     newProject.bindOnTodoListChanged(onTodoListChanged);
     user.addProject(newProject);
-    incrementProjectIdCounter();
+    user.incrementProjectIdCounter();
   };  
   
   initializeUser();
