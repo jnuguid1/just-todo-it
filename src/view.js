@@ -154,7 +154,7 @@ const view = (() => {
   const setTodoForm = (container) => {
     helper.createInputForm('todo-title', 'Title', container);
     helper.createInputForm('due-date-input', 'Due Date', container);
-    helper.createInputForm('priority-input', 'Priority', container);
+    helper.createSelectForm('priority-select', container, 'Priority', 'Urgent', 'Normal', 'Unimportant')
     helper.createTextAreaForm('description-textarea', 'Description', container);
     helper.createTextAreaForm('notes-input', 'Notes', container);
     helper.createButtonForm('button', 'todo-submit-btn', 'SUBMIT', container);
@@ -194,7 +194,7 @@ const view = (() => {
   const resetTodoSubmitForm = () => {
     document.querySelector('#todo-title').value = '';
     document.querySelector('#due-date-input').value = '';
-    document.querySelector('#priority-input').value = '';
+    document.querySelector('#priority-select').value = '';
     document.querySelector('#description-textarea').value = '';
     document.querySelector('#notes-input').value = '';
     document.querySelector('#todo-form-container').style.display = 'none';
@@ -222,7 +222,7 @@ const view = (() => {
         projectId: currentProjectId,
         title: document.querySelector('#todo-title').value,
         due: document.querySelector('#due-date-input').value,
-        priority: document.querySelector('#priority-input').value,
+        priority: document.querySelector('#priority-select').value,
         desc: document.querySelector('#description-textarea').value,
         notes: document.querySelector('#notes-input').value
       };

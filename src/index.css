@@ -12,7 +12,7 @@
   --normal-secondary-color: #94FFB2;
   --pointer: pointer;
   font-size: 16px;
-  font-family: 'Roboto', 'sans-serif';
+  font-family: 'Nunito', 'Roboto', 'sans-serif';
   user-select: none;
 }
 
@@ -197,8 +197,7 @@ li {
   border-radius: 10px;
   padding: 12px;
   background-color: rgb(229, 229, 229);
-  width: 103px;
-  height: 30px;
+  display: inline-block;
   user-select: none;
   cursor: var(--pointer);
   margin-bottom: 24px;
@@ -211,10 +210,19 @@ li {
 }
 
 #todo-form-container input, 
+#todo-form-container select,
 #todo-form-container textarea {
   margin-bottom: 12px;
   font-size: 1rem;
   padding: 4px;
+}
+
+#todo-form-container select {
+  color: grey;
+}
+
+#todo-form-container option:nth-child(n+1) {
+  color: black;
 }
 
 #todo-form-container button {

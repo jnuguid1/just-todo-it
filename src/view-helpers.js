@@ -1,4 +1,8 @@
 const viewHelpers = (() => {
+
+  // Used function instead of arrow function because 
+  // variable arguments is buggy with arrow functions.
+
   function createDiv() {
     const div = document.createElement('div');
     for (let i = 0; i < arguments.length; i++) {
@@ -56,6 +60,22 @@ const viewHelpers = (() => {
     return btn;
   };
 
+  function createSelectForm(id, container, text) {
+    const select = document.createElement('select');
+    select.id = id;
+    const option = document.createElement('option');
+    option.value = '';
+    option.textContent = text;
+    select.appendChild(option);
+    for (let i = 3; i < arguments.length; i++) {
+      const options = document.createElement('option');
+      options.value = arguments[i];
+      options.textContent = arguments[i];
+      select.appendChild(options);
+    }
+    container.appendChild(select);
+  }
+
   /**
    * If insertPosition is 'before', argument[4] should be the
    * node to insert before.
@@ -82,6 +102,7 @@ const viewHelpers = (() => {
     createInputForm,
     createTextAreaForm,
     createButtonForm,
+    createSelectForm,
     createText
   };
 })();
