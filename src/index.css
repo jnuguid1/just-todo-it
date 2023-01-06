@@ -4,6 +4,12 @@
   --grey-text-color: #9a9a9a;
   --light-grey: #cdcdcd;
   --card-color: #FFFFFF;
+  --urgent-primary-color: #FF0000;
+  --urgent-secondary-color: #FFDEDE;
+  --unimportant-primary-color: #868686;
+  --unimportant-secondary-color: #D5D5D5;
+  --normal-primary-color: #00952A;
+  --normal-secondary-color: #94FFB2;
   --pointer: pointer;
   font-size: 16px;
   font-family: 'Roboto', 'sans-serif';
@@ -144,9 +150,9 @@ li {
 
 .status-container {
   display: flex;
+  align-items: center;
   gap: 24px;
 }
-
 
 .todo-card h3 {
   margin-bottom: 16px;
@@ -249,4 +255,30 @@ li {
 
 .hidden {
   display: none;
+}
+
+.priority-label-urgent,
+.priority-label-normal,
+.priority-label-unimportant {
+  padding: 4px 6px;
+  border-style: solid;
+  border-radius: 10px;
+}
+
+.priority-label-urgent {
+  border-color: var(--urgent-primary-color);
+  background-color: var(--urgent-secondary-color);
+  color: var(--urgent-primary-color);
+}
+
+.priority-label-normal {
+  border-color: var(--normal-primary-color);
+  background-color: var(--normal-secondary-color);
+  color: var(--normal-primary-color);
+}
+
+.priority-label-unimportant {
+  border-color: var(--unimportant-primary-color);
+  background-color: var(--unimportant-secondary-color);
+  color: var(--unimportant-primary-color);
 }

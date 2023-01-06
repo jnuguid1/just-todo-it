@@ -59,13 +59,20 @@ const view = (() => {
   };
 
   const setTodoTitle = (title, todoCard) => {
-    helper.createText(todoCard, 'after', 'h2', title, 'none', 'font-medium', 'mb-32');
+    helper.createText(todoCard, 'after', 'h2', title, 'none', 'font-medium', 'mb-16');
   };
 
   const setTodoStatus = (dueDate, priority, todoCard) => {
     const status = helper.createDiv('mb-16', 'status-container')
     helper.createText(status, 'after', 'p', `Due: ${dueDate}`, 'none', 'font-small');
-    helper.createText(status, 'after', 'p', priority, 'none', 'font-small');
+    const priorityLabel = helper.createText(status, 'after', 'p', priority, 'none', 'font-small');
+    if (priority.toLowerCase() === 'urgent') {
+      priorityLabel.classList.add('priority-label-urgent');
+    } else if (priority.toLowerCase() === 'normal') {
+      priorityLabel.classList.add('priority-label-normal');
+    } else if (priority.toLowerCase() === 'unimportant') {
+      priorityLabel.classList.add('priority-label-unimportant');
+    }
     todoCard.appendChild(status);
   };
 
