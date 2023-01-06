@@ -91,6 +91,10 @@ li {
   margin-bottom: 84px;
 }
 
+#project-container {
+  overflow-x: scroll;
+}
+
 .nav-list {
   display: flex;
   flex-direction: column;

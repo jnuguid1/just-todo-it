@@ -1,6 +1,13 @@
-const todoFactory = (title, description, dueDate, priority, notes) => {
+const todoFactory = (id, title, description, dueDate, priority, notes) => {
   const checkList = [];
+  let onTaskListChange = () => {};
 
+  const getId = () => {
+    return id;
+  }
+  const setId = (newId) => {
+    id = newId;
+  }
   const getTitle = () => {
     return title;
   };
@@ -33,6 +40,7 @@ const todoFactory = (title, description, dueDate, priority, notes) => {
   };
   const addTask = (task) => {
     checkList.push(task);
+    onTaskListChange(id);
   };
   const removeTask = (task) => {
     const index = checkList.indexOf(task);
@@ -40,8 +48,14 @@ const todoFactory = (title, description, dueDate, priority, notes) => {
       checkList.splice(index, 1);
     }
   };
+
+  const bindOnTaskListChange = (callback) => {
+    onTaskListChange = callback;
+  }
   
   return {
+    getId,
+    setId,
     getTitle,
     getDescription,
     getDueDate,
@@ -53,7 +67,8 @@ const todoFactory = (title, description, dueDate, priority, notes) => {
     editDueDate,
     editNotes,
     addTask,
-    removeTask
+    removeTask,
+    bindOnTaskListChange
   }
 };
 

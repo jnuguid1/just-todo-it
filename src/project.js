@@ -1,7 +1,17 @@
 const projectFactory = (name, description, id) => {
   const todoList = [];
+  let todoIdCounter = 0;
   let onTodoListChanged = () => {};
 
+  const incrementTodoIdCounter = () => {
+    todoIdCounter += 1;
+  };
+  const getTodoById = (id) => {
+    return todoList.find(todo => todo.getId() === id);
+  }
+  const getTodoIdCounter = () => {
+    return todoIdCounter;
+  };
   const copyProject = () => {
     return projectFactory(name, description);
   };
@@ -55,6 +65,9 @@ const projectFactory = (name, description, id) => {
   };
 
   return { 
+    incrementTodoIdCounter,
+    getTodoById,
+    getTodoIdCounter,
     getName,
     getDescription,
     getTodoList,

@@ -9,6 +9,7 @@ const view = (() => {
   let showProjectFormEvent = () => {};
   let setTodoFormEvent = () => {};
   let setProjectSwitchEvent = () => {};
+  let addTaskEvent = () => {};
 
   function createDiv() {
     const div = document.createElement('div');
@@ -121,6 +122,16 @@ const view = (() => {
     createText(projectContainer, 'before', 'p', description, todoList, 'font-regular', 'mb-48');
   };
 
+  const resetTodos = () => {
+    const todoListItems = todoList.children;
+    const listLength = todoListItems.length-1;
+    let i = 0;
+    while (i < listLength) {
+      todoList.removeChild(todoListItems[0]);
+      i++;
+    }
+  };
+
   const setTodoTitle = (title, todoCard) => {
     createText(todoCard, 'after', 'h2', title, 'none', 'font-medium', 'mb-32');
   };
@@ -164,7 +175,7 @@ const view = (() => {
     })
   };
 
-  const setAddTaskButton = (todoCard) => {
+  const setAddTaskButton = (projectId, todoId, todoCard) => {
     const addTaskButton = createButtonForm('div', 'none', 'Add Task', todoCard, 'p', 'add-task-button');
     const taskFormContainer = createDiv('hidden');
     const taskForm = createInputForm('none', 'Enter task name', taskFormContainer, 'task-form');
@@ -174,7 +185,8 @@ const view = (() => {
       taskFormContainer.classList.toggle('hidden');
     });
     taskSubmitButton.addEventListener('click', () => {
-
+      const taskName = taskForm.value;
+      addTaskEvent(projectId, todoId, taskName);
     });
   }
 
@@ -189,7 +201,7 @@ const view = (() => {
     setTodoStatus(todo.due, todo.priority, todoCard);
     setTodoDescription(todo.desc, todoCard);
     setTodoTasks(todo.tasks, todoCard);
-    setAddTaskButton(todoCard);
+    setAddTaskButton(todo.projectId, todo.todoId, todoCard);
     setNotes(todo.notes, todoCard);
 
     const addTodoButton = document.querySelector('#todo-add-container');
@@ -243,7 +255,7 @@ const view = (() => {
     document.querySelector('#description-textarea').value = '';
     document.querySelector('#notes-input').value = '';
     document.querySelector('#todo-form-container').style.display = 'none';
-  }
+  };
 
   const resetProjectSubmitForm = () => {
     const projectNameForm = document.querySelector('#project-name-form');
@@ -254,7 +266,11 @@ const view = (() => {
 
   const bindChangeProject = (callback) => {
     setProjectSwitchEvent = callback;
-  }
+  };
+
+  const bindAddTask = (callback) => {
+    addTaskEvent = callback;
+  };
 
   const bindSubmitTodo = (handler) => {
     const submitButton = document.querySelector('#todo-submit-btn');
@@ -270,7 +286,7 @@ const view = (() => {
       handler(todo);
       resetTodoSubmitForm();
     });
-  }
+  };
 
   const bindAddTodo = (callback) => {
     setTodoFormEvent = callback;
@@ -278,7 +294,7 @@ const view = (() => {
 
   const bindAddProject = (callback) => {
     showProjectFormEvent = callback;
-  }
+  };
 
   const bindSubmitProject = (handler) => {
     const submitButton = document.querySelector('#submit-project-button');
@@ -294,6 +310,7 @@ const view = (() => {
 
   return { 
       resetProjectView,
+      resetTodos,
       setCurrentProjectId,
       setProjectTitle,
       setProjectDescription,
@@ -304,6 +321,7 @@ const view = (() => {
       bindAddProject,
       toggleProjectForm,
       bindAddTodo,
+      bindAddTask,
       bindSubmitTodo,
       bindChangeProject
     }
