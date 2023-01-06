@@ -24,8 +24,9 @@ const controller = (() => {
     const notes = 'Add notes and any additional thoughts here';
     const firstTodo = todoFactory(todoId, todoTitle, todoDesc, dueDate, priority, notes);
     const taskName = 'Make your first task';
-    const firstTask = taskFactory(taskName);
+    const firstTask = taskFactory(taskName, firstTodo.getTaskIdCounter());
     firstTodo.addTask(firstTask);
+    firstTodo.incrementTaskIdCounter();
     firstProject.initialAddTodo(firstTodo);
     user.addProject(firstProject);
   }
@@ -74,7 +75,11 @@ const controller = (() => {
         due: todo.getDueDate(),
         priority: todo.getPriority(),
         desc: todo.getDescription(),
-        tasks: todo.getCheckList().map(task => task.getName()),
+        tasks: todo.getCheckList().map(task => ({
+          name: task.getName(),
+          id: task.getId(),
+          isCompleted: task.checkCompleted()
+        })),
         notes: todo.getNotes()
       };
       todo.bindOnTaskListChange(onTaskListChanged);
@@ -128,9 +133,10 @@ const controller = (() => {
   };
 
   const handleSubmitTask = (projectId, todoId, taskName) => {
-    const newTask = taskFactory(taskName);
     const projectTarget = user.getProjectById(projectId);
     const todoTarget = projectTarget.getTodoById(todoId);
+    const newTask = taskFactory(taskName, todoTarget.getTaskIdCounter());
+    todoTarget.incrementTaskIdCounter();
     todoTarget.addTask(newTask);
   }
 
@@ -157,6 +163,15 @@ const controller = (() => {
     user.addProject(newProject);
     user.incrementProjectIdCounter();
   };
+
+  const handleTaskToggle = (todoId, taskId) => {
+    const project = user.getProjectById(currentProjectId);
+    const todo = project.getTodoById(todoId);
+    const task = todo.getTaskById(taskId);
+    task.toggleComplete();
+  };
+
+
   
   initializeUser();
   view.bindAddTask(handleSubmitTask);
@@ -164,6 +179,7 @@ const controller = (() => {
   view.bindAddProject(addSubmitProjectEvent);
   user.bindProjectListChanged(onProjectListChange);
   view.bindChangeProject(onProjectSwitch);
+  view.bindToggleTask(handleTaskToggle);
 
   return { initializeView };
 })();

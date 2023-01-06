@@ -12,6 +12,7 @@ const view = (() => {
   let setTodoFormEvent = () => {};
   let setProjectSwitchEvent = () => {};
   let addTaskEvent = () => {};
+  let toggleTaskEvent = () => {};
 
   const setCurrentProjectId = (id) => {
     currentProjectId = id;
@@ -77,21 +78,31 @@ const view = (() => {
     return taskName;
   };
 
-  const setTaskCheckCircle = (container, task) => {
+  const setTaskCheckCircle = (todoId, container, taskElement, taskObj) => {
     const checklistCircle = helper.createDiv('checklist-circle');
-    container.insertBefore(checklistCircle, task);
+    if (taskObj.isCompleted) {
+      checklistCircle.classList.add('circle-filled');
+    } else {
+      checklistCircle.classList.remove('circle-filled');
+    }
+    container.insertBefore(checklistCircle, taskElement);
     checklistCircle.addEventListener('click', () => {
       checklistCircle.classList.toggle('circle-filled');
-      task.classList.toggle('task-done');
-
+      taskElement.classList.toggle('task-done');
+      toggleTaskEvent(todoId, taskObj.id);
     });
   };
 
-  const setTodoTasks = (tasks, todoCard) => {
+  const setTodoTasks = (todoId, tasks, todoCard) => {
     tasks.forEach(task => {
       const taskContainer = helper.createDiv('task-container')
-      const taskName = setTask(task, taskContainer);
-      setTaskCheckCircle(taskContainer, taskName);
+      const taskElement = setTask(task.name, taskContainer);
+      if (task.isCompleted) {
+        taskElement.classList.add('task-done');
+      } else {
+        taskElement.classList.remove('task-done');
+      }
+      setTaskCheckCircle(todoId, taskContainer, taskElement, task);
       todoCard.appendChild(taskContainer);
       const divider = helper.createDiv('checklist-divide');
       const hr = document.createElement('hr');
@@ -125,7 +136,7 @@ const view = (() => {
     setTodoTitle(todo.title, todoCard);
     setTodoStatus(todo.due, todo.priority, todoCard);
     setTodoDescription(todo.desc, todoCard);
-    setTodoTasks(todo.tasks, todoCard);
+    setTodoTasks(todo.todoId, todo.tasks, todoCard);
     setAddTaskButton(todo.projectId, todo.todoId, todoCard);
     setNotes(todo.notes, todoCard);
 
@@ -231,6 +242,10 @@ const view = (() => {
     });
   };
 
+  const bindToggleTask = (callback) => {
+    toggleTaskEvent = callback;
+  }
+
   addProjectButton.addEventListener('click', toggleProjectForm);
 
   return { 
@@ -248,7 +263,8 @@ const view = (() => {
       bindAddTodo,
       bindAddTask,
       bindSubmitTodo,
-      bindChangeProject
+      bindChangeProject,
+      bindToggleTask
     }
 })();
 

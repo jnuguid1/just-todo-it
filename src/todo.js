@@ -1,13 +1,23 @@
 const todoFactory = (id, title, description, dueDate, priority, notes) => {
   const checkList = [];
+  let taskIdCounter = 0;
   let onTaskListChange = () => {};
 
+  const getTaskById = (id) => {
+    return checkList.find(task => task.getId() === id);
+  }
+  const getTaskIdCounter = () => {
+    return taskIdCounter;
+  };
+  const incrementTaskIdCounter = () => {
+    taskIdCounter += 1;
+  };
   const getId = () => {
     return id;
-  }
+  };
   const setId = (newId) => {
     id = newId;
-  }
+  };
   const getTitle = () => {
     return title;
   };
@@ -51,9 +61,12 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
 
   const bindOnTaskListChange = (callback) => {
     onTaskListChange = callback;
-  }
+  };
   
   return {
+    getTaskById,
+    getTaskIdCounter,
+    incrementTaskIdCounter,
     getId,
     setId,
     getTitle,

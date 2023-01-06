@@ -1,6 +1,12 @@
-const taskFactory = (name) => {
+const taskFactory = (name, id) => {
   let isCompleted = false;
 
+  const getId = () => {
+    return id;
+  }
+  const setId = (newId) => {
+    id = newId;
+  }
   const getName = () => {
     return name;
   };
@@ -12,9 +18,10 @@ const taskFactory = (name) => {
   };
   const toggleComplete = () => {
     isCompleted = !isCompleted;
+    console.log({id, isCompleted})
   };
 
-  return { getName, checkCompleted, editName, toggleComplete};
+  return { getId, setId, getName, checkCompleted, editName, toggleComplete};
 };
 
 export default taskFactory;
