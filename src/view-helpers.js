@@ -95,6 +95,12 @@ const viewHelpers = (() => {
     }
     return textElement;
   }
+  
+  function createIcon(iconClass) {
+    const icon = document.createElement('i');
+    icon.classList.add(iconClass);
+    return icon;
+  }
 
   return {
     createDiv,
@@ -103,7 +109,8 @@ const viewHelpers = (() => {
     createTextAreaForm,
     createButtonForm,
     createSelectForm,
-    createText
+    createText,
+    createIcon
   };
 })();
 

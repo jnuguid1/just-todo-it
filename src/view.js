@@ -8,6 +8,7 @@ const view = (() => {
   const projectContainer = document.querySelector('#project-container');
   let todoList = document.querySelector('#todo-list');
   const settings = document.querySelector('#settings');
+  const deleteIcon = helper.createIcon('p-icon--close');
   let showProjectFormEvent = () => {};
   let setTodoFormEvent = () => {};
   let setProjectSwitchEvent = () => {};
@@ -30,10 +31,13 @@ const view = (() => {
   };
 
   const setProjectListItem = (project, projectId) => {
+    const projectListContainer = helper.createDiv('project-list-container');
     const projectListItem = document.createElement('li');
     projectListItem.setAttribute('project-id', projectId);
     projectListItem.textContent = project;
-    projects.insertBefore(projectListItem, addProjectButton);
+    projectListContainer.appendChild(projectListItem);
+    projectListContainer.appendChild(deleteIcon);
+    projects.insertBefore(projectListContainer, addProjectButton);
     projectListItem.addEventListener('click', () => {
       if (projectId !== currentProjectId) {
         setProjectSwitchEvent(projectId);
