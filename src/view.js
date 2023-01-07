@@ -78,7 +78,7 @@ const view = (() => {
   };
 
   const setTodoDescription = (desc, todoCard) => {
-    helper.createText(todoCard, 'after', 'p', desc, 'none', 'mb-32');
+    helper.createText(todoCard, 'after', 'p', desc, 'none', 'mb-8');
   };
 
   const setTask = (task, container) => {
@@ -181,13 +181,25 @@ const view = (() => {
         showError();
         event.preventDefault();
       } else {
+        let desc;
+        let notes;
+        if (document.querySelector('#description-textarea').value === '') {
+          desc = 'This is a todo. Add checklist tasks, a due date, and priorities here';
+        } else {
+          desc = document.querySelector('#description-textarea').value;
+        }
+        if (document.querySelector(('#notes-input')).value === '') {
+          notes = 'Add notes and any additional thoughts here';
+        } else {
+          notes = document.querySelector(('#notes-input')).value;
+        }
         const todo = {
           projectId: currentProjectId,
           title: document.querySelector('#todo-title').value,
           due: document.querySelector('#due-date-input').value,
           priority: document.querySelector('#priority-select').value,
-          desc: document.querySelector('#description-textarea').value,
-          notes: document.querySelector('#notes-input').value
+          desc: desc,
+          notes: notes
         };
         addTodoEvent(todo);
         resetTodoSubmitForm();
