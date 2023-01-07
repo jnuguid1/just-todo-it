@@ -3,6 +3,7 @@
   --secondary-color: #F8FFE8;
   --grey-text-color: #9a9a9a;
   --light-grey: #cdcdcd;
+  --lighter-grey: #f1f1f1;
   --card-color: #FFFFFF;
   --urgent-primary-color: #FF0000;
   --urgent-secondary-color: #FFDEDE;
@@ -10,6 +11,7 @@
   --unimportant-secondary-color: #D5D5D5;
   --normal-primary-color: #00952A;
   --normal-secondary-color: #94FFB2;
+  --error-color: #bd0303;
   --pointer: pointer;
   font-size: 16px;
   font-family: 'Nunito', 'Roboto', 'sans-serif';
@@ -89,7 +91,7 @@ li {
 
 #container{
   display: grid;
-  grid-template-columns: 1fr 5fr;
+  grid-template-columns: 1.1fr 5fr;
   height: 100vh;
 }
 
@@ -138,7 +140,7 @@ li {
   display: grid;
   grid-auto-columns: 350px;
   grid-auto-flow: column;
-  gap: 16px;
+  gap: 24px;
 }
 
 .todo-card {
@@ -159,8 +161,8 @@ li {
 }
 
 .checklist-circle {
-  width: 18px;
-  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
   border-radius: 50%;
   border-color: var(--light-grey);
   border-style: solid;
@@ -180,17 +182,29 @@ li {
 .add-task-button {
   color: var(--grey-text-color);
   cursor: var(--pointer);
-  margin-top: 16px;
+  margin-top: 12px;
+  margin-bottom: 8px;
   user-select: none;
+  border-style: solid;
+  display: inline-block;
+  border-color: var(--light-grey);
+  padding: 6px 8px;
+  border-radius: 14px;
+  background-color: var(--lighter-grey);
+}
+
+.submit-task-btn {
+  padding: 8px;
 }
 
 .task-form {
   margin-top: 12px;
   margin-right: 8px;
+  padding: 8px;
 }
 
 .notes-heading {
-  margin-top: 32px;
+  margin-top: 24px;
 }
 
 .add-todo-button {
@@ -200,7 +214,7 @@ li {
   display: inline-block;
   user-select: none;
   cursor: var(--pointer);
-  margin-bottom: 24px;
+  margin-bottom: 8px;
 }
 
 #todo-form-container {
@@ -212,13 +226,19 @@ li {
 #todo-form-container input, 
 #todo-form-container select,
 #todo-form-container textarea {
-  margin-bottom: 12px;
+  margin-top: 12px;
+  margin-bottom: 4px;
   font-size: 1rem;
   padding: 4px;
 }
 
 #todo-form-container select {
   color: grey;
+}
+
+#todo-submit-btn {
+  margin-top: 8px;
+  font-size: 1rem;
 }
 
 #todo-form-container option:nth-child(n+1) {
@@ -232,6 +252,7 @@ li {
 }
 
 .task-container {
+  margin-top: 20px;
   display: flex;
   gap: 16px;
   align-items: center;
@@ -246,6 +267,7 @@ li {
   padding: 8px;
   font-size: 0.875rem;
   margin-bottom: 12px;
+  width: 150px;
 }
 
 #project-form-container button {
@@ -270,7 +292,7 @@ li {
 .priority-label-unimportant {
   padding: 4px 6px;
   border-style: solid;
-  border-radius: 10px;
+  border-radius: 16px;
 }
 
 .priority-label-urgent {
@@ -289,4 +311,8 @@ li {
   border-color: var(--unimportant-primary-color);
   background-color: var(--unimportant-secondary-color);
   color: var(--unimportant-primary-color);
+}
+
+.error {
+  color: var(--error-color);
 }

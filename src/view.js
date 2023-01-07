@@ -11,6 +11,7 @@ const view = (() => {
   let showProjectFormEvent = () => {};
   let setTodoFormEvent = () => {};
   let setProjectSwitchEvent = () => {};
+  let addTodoEvent = () => {};
   let addTaskEvent = () => {};
   let toggleTaskEvent = () => {};
 
@@ -122,7 +123,7 @@ const view = (() => {
     const addTaskButton = helper.createButtonForm('div', 'none', 'Add Task', todoCard, 'p', 'add-task-button');
     const taskFormContainer = helper.createDiv('hidden');
     const taskForm = helper.createInputForm('none', 'Enter task name', taskFormContainer, 'task-form');
-    const taskSubmitButton = helper.createButtonForm('button', 'none', 'SUBMIT', taskFormContainer);
+    const taskSubmitButton = helper.createButtonForm('button', 'none', 'Submit', taskFormContainer, 'submit-task-btn');
     todoCard.appendChild(taskFormContainer);
     addTaskButton.addEventListener('click', () => {
       taskFormContainer.classList.toggle('hidden');
@@ -139,6 +140,7 @@ const view = (() => {
   };
 
   const addTodoCard = (todo) => {
+    const todoCardContainer = helper.createDiv();
     const todoCard = helper.createDiv('todo-card');
     setTodoTitle(todo.title, todoCard);
     setTodoStatus(todo.due, todo.priority, todoCard);
@@ -148,16 +150,58 @@ const view = (() => {
     setNotes(todo.notes, todoCard);
 
     const addTodoButton = document.querySelector('#todo-add-container');
-    todoList.insertBefore(todoCard, addTodoButton);
+    todoCardContainer.appendChild(todoCard);
+    todoList.insertBefore(todoCardContainer, addTodoButton);
   };
 
   const setTodoForm = (container) => {
-    helper.createInputForm('todo-title', 'Title', container);
-    helper.createInputForm('due-date-input', 'Due Date', container);
-    helper.createSelectForm('priority-select', container, 'Priority', 'Urgent', 'Normal', 'Unimportant')
-    helper.createTextAreaForm('description-textarea', 'Description', container);
-    helper.createTextAreaForm('notes-input', 'Notes', container);
-    helper.createButtonForm('button', 'todo-submit-btn', 'SUBMIT', container);
+    const form = document.createElement('form');
+    form.noValidate = true;
+
+    const todoTitle = helper.createInputForm('todo-title', 'Title', form);
+    const titleError = document.createElement('span');
+    titleError.classList.add('error');
+    form.appendChild(titleError);
+    helper.createInputForm('due-date-input', 'Due Date', form);
+    helper.createSelectForm('priority-select', form, 'Priority', 'Urgent', 'Normal', 'Unimportant')
+    helper.createTextAreaForm('description-textarea', 'Description', form);
+    helper.createTextAreaForm('notes-input', 'Notes', form);
+    const todoButton = helper.createButtonForm('button', 'todo-submit-btn', 'SUBMIT', form);
+    todoTitle.required = true;
+
+    todoTitle.addEventListener('input', (event) => {
+      if (todoTitle.validity.valid) {
+        titleError.textContent = '';
+        titleError.className = 'error';
+      }
+    })
+
+    form.addEventListener('submit', (event) => {
+      if (!todoTitle.validity.valid) {
+        showError();
+        event.preventDefault();
+      } else {
+        const todo = {
+          projectId: currentProjectId,
+          title: document.querySelector('#todo-title').value,
+          due: document.querySelector('#due-date-input').value,
+          priority: document.querySelector('#priority-select').value,
+          desc: document.querySelector('#description-textarea').value,
+          notes: document.querySelector('#notes-input').value
+        };
+        addTodoEvent(todo);
+        resetTodoSubmitForm();
+        event.preventDefault();
+      }
+    })
+
+    container.appendChild(form);
+
+    function showError() {
+      if (todoTitle.validity.valueMissing) {
+        titleError.textContent = 'You need to enter a title.';
+      }
+    }
   };
 
   const setAddTodoButton = () => {
@@ -215,20 +259,8 @@ const view = (() => {
     addTaskEvent = callback;
   };
 
-  const bindSubmitTodo = (handler) => {
-    const submitButton = document.querySelector('#todo-submit-btn');
-    submitButton.addEventListener('click', () => {
-      const todo = {
-        projectId: currentProjectId,
-        title: document.querySelector('#todo-title').value,
-        due: document.querySelector('#due-date-input').value,
-        priority: document.querySelector('#priority-select').value,
-        desc: document.querySelector('#description-textarea').value,
-        notes: document.querySelector('#notes-input').value
-      };
-      handler(todo);
-      resetTodoSubmitForm();
-    });
+  const bindSubmitTodo = (callback) => {
+    addTodoEvent = callback;
   };
 
   const bindAddTodo = (callback) => {
