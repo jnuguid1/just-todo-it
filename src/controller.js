@@ -84,6 +84,7 @@ const controller = (() => {
         notes: todo.getNotes()
       };
       todo.bindOnTaskListChange(onTaskListChanged);
+      todo.bindOnTodoChange(onTodoChanged);
       view.addTodoCard(todoObj);
     });
   };
@@ -107,6 +108,10 @@ const controller = (() => {
   const onTodoListChanged = () => {
     onTaskListChanged();
   };
+
+  const onTodoChanged = () => {
+    onTaskListChanged();
+  }
 
   const onProjectListChange = () => {
     view.resetProjectList();

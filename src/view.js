@@ -237,12 +237,13 @@ const view = (() => {
   const setTodoForm = (container) => {
     const form = document.createElement('form');
     form.noValidate = true;
-
+    
+    helper.createFormLabel('datetime-label', 'Due Date', form);
+    helper.createDateTimeInput('due-date-input', form);
     const todoTitle = helper.createInputForm('todo-title', 'Title', form);
     const titleError = document.createElement('span');
     titleError.classList.add('error');
     form.appendChild(titleError);
-    helper.createInputForm('due-date-input', 'Due Date', form);
     helper.createSelectForm('priority-select', form, 'Priority', 'Urgent', 'Normal', 'Unimportant')
     const todoDescription = helper.createTextAreaForm('description-textarea', 'Description', form);
     const todoNotes = helper.createTextAreaForm('notes-input', 'Notes', form);
@@ -274,7 +275,7 @@ const view = (() => {
         const todo = {
           projectId: currentProjectId,
           title: document.querySelector('#todo-title').value,
-          due: document.querySelector('#due-date-input').value,
+          due: document.querySelector('#due-date-input').value.replace('T', ' '),
           priority: document.querySelector('#priority-select').value,
           desc: desc,
           notes: notes

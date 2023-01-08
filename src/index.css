@@ -217,7 +217,7 @@ li {
   display: inline-block;
   user-select: none;
   cursor: var(--pointer);
-  margin-bottom: 8px;
+  margin-bottom: 24px;
 }
 
 #todo-form-container {
@@ -229,13 +229,23 @@ li {
 #todo-form-container input, 
 #todo-form-container select,
 #todo-form-container textarea {
-  margin-top: 12px;
-  margin-bottom: 4px;
   font-size: 1rem;
   padding: 4px;
 }
 
-#todo-form-container select {
+#todo-form-container input:nth-child(n+3), 
+#todo-form-container select,
+#todo-form-container textarea {
+  margin-top: 16px;
+}
+
+#todo-form-container label {
+  margin-bottom: 8px;
+  color: grey;
+}
+
+#todo-form-container select,
+#todo-form-container input[type="datetime-local"] {
   color: grey;
 }
 

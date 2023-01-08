@@ -51,6 +51,14 @@ const viewHelpers = (() => {
     return input;
   };
 
+  function createFormLabel(id, text, container) {
+    const label = document.createElement('label');
+    label.id = id;
+    label.textContent = text;
+    container.appendChild(label);
+    return label;
+  };
+
   function createTextAreaForm(id, placeholder, container) {
     const input = document.createElement('textarea');
     input.id = id;
@@ -60,6 +68,13 @@ const viewHelpers = (() => {
     }
     container.appendChild(input);
     return input;
+  };
+
+  function createDateTimeInput(id, container) {
+    const input = document.createElement('input');
+    input.type = 'datetime-local';
+    input.id = id;
+    container.appendChild(input);
   };
 
   function createButtonForm(element, id, text, container) {
@@ -129,6 +144,8 @@ const viewHelpers = (() => {
     createList,
     createListItem,
     createInputForm,
+    createDateTimeInput,
+    createFormLabel,
     createTextAreaForm,
     createButtonForm,
     createSelectForm,
