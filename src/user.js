@@ -31,6 +31,7 @@ const user = (() => {
     if (index > -1) {
       projects.splice(index, 1);
     }
+    onProjectsListChanged();
   };
 
   const bindProjectListChanged = (callback) => {

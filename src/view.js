@@ -8,13 +8,13 @@ const view = (() => {
   const projectContainer = document.querySelector('#project-container');
   let todoList = document.querySelector('#todo-list');
   const settings = document.querySelector('#settings');
-  const deleteIcon = helper.createIcon('p-icon--close');
   let showProjectFormEvent = () => {};
   let setTodoFormEvent = () => {};
   let setProjectSwitchEvent = () => {};
   let addTodoEvent = () => {};
   let addTaskEvent = () => {};
   let toggleTaskEvent = () => {};
+  let deleteProjectEvent = () => {};
 
   const setCurrentProjectId = (id) => {
     currentProjectId = id;
@@ -30,18 +30,40 @@ const view = (() => {
     todoList = document.querySelector('#todo-list');
   };
 
+  const resetProjectList = () => {
+    let element = projects.firstElementChild;
+    while (element) {
+      if (element.id === 'add-project-btn') {
+        break;
+      } else {
+        projects.removeChild(element);
+        element = projects.firstElementChild;
+      } 
+    }
+  };
+
   const setProjectListItem = (project, projectId) => {
     const projectListContainer = helper.createDiv('project-list-container');
     const projectListItem = document.createElement('li');
     projectListItem.setAttribute('project-id', projectId);
     projectListItem.textContent = project;
+    const deleteProjectIcon = helper.createIcon('fa-solid', 'fa-xmark', 'fa-lg', 'hidden');
     projectListContainer.appendChild(projectListItem);
-    projectListContainer.appendChild(deleteIcon);
+    projectListContainer.appendChild(deleteProjectIcon);
     projects.insertBefore(projectListContainer, addProjectButton);
     projectListItem.addEventListener('click', () => {
       if (projectId !== currentProjectId) {
         setProjectSwitchEvent(projectId);
       }
+    });
+    projectListContainer.addEventListener('mouseenter', () => {
+      deleteProjectIcon.classList.remove('hidden');
+    });
+    projectListContainer.addEventListener('mouseleave', () => {
+      deleteProjectIcon.classList.add('hidden');
+    });
+    deleteProjectIcon.addEventListener('click', () => {
+      deleteProjectEvent(projectId);
     });
   };
 
@@ -132,10 +154,17 @@ const view = (() => {
     addTaskButton.addEventListener('click', () => {
       taskFormContainer.classList.toggle('hidden');
     });
-    taskSubmitButton.addEventListener('click', () => {
+    const formEvent = () => {
       const taskName = taskForm.value;
       addTaskEvent(projectId, todoId, taskName);
-    });
+    }
+    taskSubmitButton.addEventListener('click', formEvent);
+    taskForm.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        formEvent();
+      }
+    })
   }
 
   const setNotes = (notes, todoCard) => {
@@ -168,22 +197,20 @@ const view = (() => {
     form.appendChild(titleError);
     helper.createInputForm('due-date-input', 'Due Date', form);
     helper.createSelectForm('priority-select', form, 'Priority', 'Urgent', 'Normal', 'Unimportant')
-    helper.createTextAreaForm('description-textarea', 'Description', form);
-    helper.createTextAreaForm('notes-input', 'Notes', form);
-    const todoButton = helper.createButtonForm('button', 'todo-submit-btn', 'SUBMIT', form);
+    const todoDescription = helper.createTextAreaForm('description-textarea', 'Description', form);
+    const todoNotes = helper.createTextAreaForm('notes-input', 'Notes', form);
+     helper.createButtonForm('button', 'todo-submit-btn', 'SUBMIT', form);
     todoTitle.required = true;
 
-    todoTitle.addEventListener('input', (event) => {
+    todoTitle.addEventListener('input', () => {
       if (todoTitle.validity.valid) {
         titleError.textContent = '';
         titleError.className = 'error';
       }
     })
-
-    form.addEventListener('submit', (event) => {
+    const formEvent = () => {
       if (!todoTitle.validity.valid) {
         showError();
-        event.preventDefault();
       } else {
         let desc;
         let notes;
@@ -207,17 +234,39 @@ const view = (() => {
         };
         addTodoEvent(todo);
         resetTodoSubmitForm();
-        event.preventDefault();
-      }
-    })
-
-    container.appendChild(form);
-
-    function showError() {
-      if (todoTitle.validity.valueMissing) {
-        titleError.textContent = 'You need to enter a title.';
-      }
+      };
     }
+
+  form.addEventListener('submit', (event) => {
+    formEvent();
+    event.preventDefault();
+  }
+  );
+  todoTitle.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      formEvent();
+    }
+  });
+  todoDescription.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      formEvent();
+    }
+  });
+  todoNotes.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      formEvent();
+    }
+  });
+  container.appendChild(form);
+
+  function showError() {
+    if (todoTitle.validity.valueMissing) {
+      titleError.textContent = 'You need to enter a title.';
+    }
+  }
   };
 
   const setAddTodoButton = () => {
@@ -289,22 +338,34 @@ const view = (() => {
 
   const bindSubmitProject = (handler) => {
     const submitButton = document.querySelector('#submit-project-button');
-    submitButton.addEventListener('click', () => {
-      const projectNameForm = document.querySelector('#project-name-form');
+    const projectNameForm = document.querySelector('#project-name-form');
+    const formEvent = () => {
       const projectName = projectNameForm.value;
       handler(projectName);
       resetProjectSubmitForm();
-    });
+    }
+    submitButton.addEventListener('click', formEvent);
+    projectNameForm.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        formEvent();
+      }
+    })
   };
 
   const bindToggleTask = (callback) => {
     toggleTaskEvent = callback;
   }
 
+  const bindDeleteProject = (callback) => {
+    deleteProjectEvent = callback;
+  };
+
   addProjectButton.addEventListener('click', toggleProjectForm);
 
   return { 
       resetProjectView,
+      resetProjectList,
       resetTodos,
       setCurrentProjectId,
       setProjectTitle,
@@ -319,7 +380,8 @@ const view = (() => {
       bindAddTask,
       bindSubmitTodo,
       bindChangeProject,
-      bindToggleTask
+      bindToggleTask,
+      bindDeleteProject
     }
 })();
 

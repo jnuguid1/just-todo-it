@@ -135,7 +135,7 @@ li {
 
 #add-project-btn {
   user-select: none;
-  margin-bottom: 8px;
+  margin-top: 8px;
 }
 
 #todo-list {
@@ -261,6 +261,7 @@ li {
 }
 
 #project-form-container {
+  margin-top: 14px;
   display: flex;
   gap: 8px;
 }
@@ -321,7 +322,11 @@ li {
 
 .project-list-container {
   display: flex; 
-  gap: 64px;
+  gap: 48px;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
+}
+
+.project-list-container .fa-xmark:hover {
+  cursor: pointer;
 }

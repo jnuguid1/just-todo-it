@@ -121,11 +121,10 @@ const controller = (() => {
   };
 
   const onProjectListChange = () => {
-    const projects = user.getProjects();
-    const projectTarget = projects[projects.length-1];
-    const projectName = projectTarget.getName();
-    const projectId = projectTarget.getId();
-    view.setProjectListItem(projectName, projectId);
+    view.resetProjectList();
+    user.getProjects().forEach(project => {
+      view.setProjectListItem(project.getName(), project.getId());
+    });
   };
 
   const onProjectSwitch = (id) => {
@@ -171,6 +170,11 @@ const controller = (() => {
     task.toggleComplete();
   };
 
+  const handleDeleteProject = (projectId) => {
+    const project = user.getProjectById(projectId);
+    user.removeProject(project);
+  };
+
 
   
   initializeUser();
@@ -180,6 +184,7 @@ const controller = (() => {
   user.bindProjectListChanged(onProjectListChange);
   view.bindChangeProject(onProjectSwitch);
   view.bindToggleTask(handleTaskToggle);
+  view.bindDeleteProject(handleDeleteProject);
 
   return { initializeView };
 })();
