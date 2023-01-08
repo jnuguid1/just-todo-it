@@ -97,7 +97,7 @@ const controller = (() => {
 
   // Temporary implementation. In future reset only the task list of a
   // todo card instead of all the todo cards in a project.
-  const onTaskListChanged = (todoId) => {
+  const onTaskListChanged = () => {
     const currentProject = user.getProjectById(currentProjectId);
     view.resetTodos();
     addTodos(currentProject);
@@ -175,6 +175,13 @@ const controller = (() => {
     user.removeProject(project);
   };
 
+  const handleDeleteTask = (todoId, taskId) => {
+    const project = user.getProjectById(currentProjectId);
+    const todo = project.getTodoById(todoId);
+    const task = todo.getTaskById(taskId);
+    todo.removeTask(task);
+  }
+
 
   
   initializeUser();
@@ -185,6 +192,7 @@ const controller = (() => {
   view.bindChangeProject(onProjectSwitch);
   view.bindToggleTask(handleTaskToggle);
   view.bindDeleteProject(handleDeleteProject);
+  view.bindDeleteTask(handleDeleteTask);
 
   return { initializeView };
 })();

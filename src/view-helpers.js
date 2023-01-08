@@ -96,7 +96,7 @@ const viewHelpers = (() => {
     return textElement;
   }
   
-  function createIcon(i) {
+  function createIcon() {
     const icon = document.createElement('i');
     for (let i = 0; i < arguments.length; i++) {
       icon.classList.add(`${arguments[i]}`);

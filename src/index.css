@@ -256,8 +256,18 @@ li {
 .task-container {
   margin-top: 20px;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.task-name-circle-container {
+  display: flex;
   gap: 16px;
   align-items: center;
+}
+
+.task-container .fa-xmark {
+  justify-self: flex-end;
 }
 
 #project-form-container {
@@ -327,6 +337,6 @@ li {
   margin-bottom: 8px;
 }
 
-.project-list-container .fa-xmark:hover {
+.fa-xmark:hover {
   cursor: pointer;
 }

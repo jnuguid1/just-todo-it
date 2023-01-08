@@ -15,6 +15,7 @@ const view = (() => {
   let addTaskEvent = () => {};
   let toggleTaskEvent = () => {};
   let deleteProjectEvent = () => {};
+  let deleteTaskEvent = () => {};
 
   const setCurrentProjectId = (id) => {
     currentProjectId = id;
@@ -129,19 +130,32 @@ const view = (() => {
 
   const setTodoTasks = (todoId, tasks, todoCard) => {
     tasks.forEach(task => {
-      const taskContainer = helper.createDiv('task-container')
-      const taskElement = setTask(task.name, taskContainer);
+      const taskContainer = helper.createDiv('task-container');
+      const taskNameCircleContainer = helper.createDiv('task-name-circle-container');
+      const taskElement = setTask(task.name, taskNameCircleContainer);
+      const deleteProjectIcon = helper.createIcon('fa-solid', 'fa-xmark', 'fa-lg', 'hidden');
       if (task.isCompleted) {
         taskElement.classList.add('task-done');
       } else {
         taskElement.classList.remove('task-done');
       }
-      setTaskCheckCircle(todoId, taskContainer, taskElement, task);
+      setTaskCheckCircle(todoId, taskNameCircleContainer, taskElement, task);
+      taskContainer.appendChild(taskNameCircleContainer);
+      taskContainer.appendChild(deleteProjectIcon);
       todoCard.appendChild(taskContainer);
       const divider = helper.createDiv('checklist-divide');
       const hr = document.createElement('hr');
       divider.appendChild(hr);
       todoCard.appendChild(divider);
+      taskContainer.addEventListener('mouseenter', () => {
+        deleteProjectIcon.classList.remove('hidden');
+      });
+      taskContainer.addEventListener('mouseleave', () => {
+        deleteProjectIcon.classList.add('hidden');
+      });
+      deleteProjectIcon.addEventListener('click', () => {
+        deleteTaskEvent(todoId, task.id);
+      })
     })
   };
 
@@ -355,10 +369,14 @@ const view = (() => {
 
   const bindToggleTask = (callback) => {
     toggleTaskEvent = callback;
-  }
+  };
 
   const bindDeleteProject = (callback) => {
     deleteProjectEvent = callback;
+  };
+
+  const bindDeleteTask = (callback) => {
+    deleteTaskEvent = callback;
   };
 
   addProjectButton.addEventListener('click', toggleProjectForm);
@@ -381,7 +399,8 @@ const view = (() => {
       bindSubmitTodo,
       bindChangeProject,
       bindToggleTask,
-      bindDeleteProject
+      bindDeleteProject,
+      bindDeleteTask,
     }
 })();
 

@@ -57,6 +57,7 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
     if (index > -1) {
       checkList.splice(index, 1);
     }
+    onTaskListChange();
   };
 
   const bindOnTaskListChange = (callback) => {
