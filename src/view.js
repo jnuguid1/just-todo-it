@@ -17,6 +17,7 @@ const view = (() => {
   let deleteProjectEvent = () => {};
   let deleteTodoEvent = () => {};
   let deleteTaskEvent = () => {};
+  let minimizeTodoEvent = () => {};
 
   const setCurrentProjectId = (id) => {
     currentProjectId = id;
@@ -84,11 +85,11 @@ const view = (() => {
     }
   };
 
-  const setTodoTitle = (todoId, title, todoCard) => {
+  const setTodoTitle = (todoId, title, todoCard, cardSection) => {
     const titleContainer = helper.createDiv('title-container');
     helper.createText(titleContainer, 'after', 'h2', title, 'none', 'font-medium');
-    const ellipsis = helper.createIcon(titleContainer, 'fa-solid', 'fa-ellipsis-vertical', 'fa-lg');
-    const floatingSelection = createFloatingSelection(todoId, titleContainer);
+    const ellipsis = helper.createIcon(titleContainer, 'fa-solid', 'fa-ellipsis-vertical', 'fa-lg', 'ellipsis-container');
+    const floatingSelection = createFloatingSelection(todoId, titleContainer, cardSection);
     floatingSelection.classList.add('hidden');
     todoCard.appendChild(titleContainer);
 
@@ -97,12 +98,18 @@ const view = (() => {
     });
   };
 
-  function createFloatingSelection(todoId, container) {
+  function createFloatingSelection(todoId, container, cardSection) {
     const selectionContainer = helper.createDiv('selection-container');
     const optionsList = helper.createList(selectionContainer, 'options-list');
+    const minimizeCardOption = helper.createListItem(optionsList, 'Minimize Todo');
     const deleteTodoOption = helper.createListItem(optionsList, 'Delete Todo');
     container.appendChild(selectionContainer);
-
+    (cardSection.classList.contains('hidden')) ?
+        minimizeCardOption.textContent = 'Maximize Todo' :
+        minimizeCardOption.textContent = 'Minimize Todo';
+    minimizeCardOption.addEventListener('click', () => {
+      minimizeTodoEvent(todoId);
+    });
     deleteTodoOption.addEventListener('click', () => {
       deleteTodoEvent(todoId);
     });
@@ -208,12 +215,19 @@ const view = (() => {
   const addTodoCard = (todo) => {
     const todoCardContainer = helper.createDiv();
     const todoCard = helper.createDiv('todo-card');
-    setTodoTitle(todo.todoId, todo.title, todoCard);
-    setTodoStatus(todo.due, todo.priority, todoCard);
-    setTodoDescription(todo.desc, todoCard);
-    setTodoTasks(todo.todoId, todo.tasks, todoCard);
-    setAddTaskButton(todo.projectId, todo.todoId, todoCard);
-    setNotes(todo.notes, todoCard);
+    const cardTopSection = helper.createDiv('card-top-section');
+    const cardBottomSection = helper.createDiv('card-bottom-section');
+    if (todo.isMinimized === true) {
+      cardBottomSection.classList.add('hidden');
+    }
+    setTodoTitle(todo.todoId, todo.title, cardTopSection, cardBottomSection);
+    setTodoStatus(todo.due, todo.priority,cardTopSection);
+    setTodoDescription(todo.desc, cardTopSection);
+    setTodoTasks(todo.todoId, todo.tasks, cardBottomSection);
+    setAddTaskButton(todo.projectId, todo.todoId, cardBottomSection);
+    setNotes(todo.notes, cardBottomSection);
+    todoCard.appendChild(cardTopSection);
+    todoCard.appendChild(cardBottomSection);
 
     const addTodoButton = document.querySelector('#todo-add-container');
     todoCardContainer.appendChild(todoCard);
@@ -402,6 +416,10 @@ const view = (() => {
     deleteTodoEvent = callback;
   }
 
+  const bindMinimizeTodo = (callback) => {
+    minimizeTodoEvent = callback;
+  }
+
   addProjectButton.addEventListener('click', toggleProjectForm);
 
   return { 
@@ -425,6 +443,7 @@ const view = (() => {
       bindDeleteProject,
       bindDeleteTodo,
       bindDeleteTask,
+      bindMinimizeTodo
     }
 })();
 

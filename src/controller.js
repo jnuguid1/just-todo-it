@@ -75,6 +75,7 @@ const controller = (() => {
         due: todo.getDueDate(),
         priority: todo.getPriority(),
         desc: todo.getDescription(),
+        isMinimized: todo.checkIsMinimized(),
         tasks: todo.getCheckList().map(task => ({
           name: task.getName(),
           id: task.getId(),
@@ -166,16 +167,20 @@ const controller = (() => {
     const project = user.getProjectById(currentProjectId);
     const todo = project.getTodoById(todoId);
     project.removeTodo(todo);
-  }
+  };
 
   const handleDeleteTask = (todoId, taskId) => {
     const project = user.getProjectById(currentProjectId);
     const todo = project.getTodoById(todoId);
     const task = todo.getTaskById(taskId);
     todo.removeTask(task);
-  }
+  };
 
-
+  const handleMinimizeTodo = (todoId) => {
+    const project = user.getProjectById(currentProjectId);
+    const todo = project.getTodoById(todoId);
+    todo.toggleMinimize();
+  };
   
   initializeUser();
   view.bindAddTask(handleSubmitTask);
@@ -187,6 +192,7 @@ const controller = (() => {
   view.bindDeleteProject(handleDeleteProject);
   view.bindDeleteTask(handleDeleteTask);
   view.bindDeleteTodo(handleDeleteTodo);
+  view.bindMinimizeTodo(handleMinimizeTodo);
 
   return { initializeView };
 })();

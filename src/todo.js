@@ -2,6 +2,8 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   const checkList = [];
   let taskIdCounter = 0;
   let onTaskListChange = () => {};
+  let onTodoChange = () => {};
+  let isMinimized = false;
 
   const getTaskById = (id) => {
     return checkList.find(task => task.getId() === id);
@@ -59,10 +61,21 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
     }
     onTaskListChange();
   };
+  const toggleMinimize = () => {
+    isMinimized = !isMinimized;
+    onTaskListChange();
+  };
+  const checkIsMinimized = () => {
+    return isMinimized;
+  };
 
   const bindOnTaskListChange = (callback) => {
     onTaskListChange = callback;
   };
+
+  const bindOnTodoChange = (callback) => {
+    onTodoChange = callback;
+  }
   
   return {
     getTaskById,
@@ -82,7 +95,10 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
     editNotes,
     addTask,
     removeTask,
-    bindOnTaskListChange
+    bindOnTaskListChange,
+    bindOnTodoChange,
+    toggleMinimize,
+    checkIsMinimized,
   }
 };
 
