@@ -15,6 +15,7 @@ const view = (() => {
   let addTaskEvent = () => {};
   let toggleTaskEvent = () => {};
   let deleteProjectEvent = () => {};
+  let deleteTodoEvent = () => {};
   let deleteTaskEvent = () => {};
 
   const setCurrentProjectId = (id) => {
@@ -45,12 +46,9 @@ const view = (() => {
 
   const setProjectListItem = (project, projectId) => {
     const projectListContainer = helper.createDiv('project-list-container');
-    const projectListItem = document.createElement('li');
+    const projectListItem = helper.createListItem(projectListContainer, project);
     projectListItem.setAttribute('project-id', projectId);
-    projectListItem.textContent = project;
-    const deleteProjectIcon = helper.createIcon('fa-solid', 'fa-xmark', 'fa-lg', 'hidden');
-    projectListContainer.appendChild(projectListItem);
-    projectListContainer.appendChild(deleteProjectIcon);
+    const deleteProjectIcon = helper.createIcon(projectListContainer, 'fa-solid', 'fa-xmark', 'fa-lg', 'hidden');
     projects.insertBefore(projectListContainer, addProjectButton);
     projectListItem.addEventListener('click', () => {
       if (projectId !== currentProjectId) {
@@ -86,8 +84,30 @@ const view = (() => {
     }
   };
 
-  const setTodoTitle = (title, todoCard) => {
-    helper.createText(todoCard, 'after', 'h2', title, 'none', 'font-medium', 'mb-16');
+  const setTodoTitle = (todoId, title, todoCard) => {
+    const titleContainer = helper.createDiv('title-container');
+    helper.createText(titleContainer, 'after', 'h2', title, 'none', 'font-medium');
+    const ellipsis = helper.createIcon(titleContainer, 'fa-solid', 'fa-ellipsis-vertical', 'fa-lg');
+    const floatingSelection = createFloatingSelection(todoId, titleContainer);
+    floatingSelection.classList.add('hidden');
+    todoCard.appendChild(titleContainer);
+
+    ellipsis.addEventListener('click', () => {
+      floatingSelection.classList.toggle('hidden');
+    });
+  };
+
+  function createFloatingSelection(todoId, container) {
+    const selectionContainer = helper.createDiv('selection-container');
+    const optionsList = helper.createList(selectionContainer, 'options-list');
+    const deleteTodoOption = helper.createListItem(optionsList, 'Delete Todo');
+    container.appendChild(selectionContainer);
+
+    deleteTodoOption.addEventListener('click', () => {
+      deleteTodoEvent(todoId);
+    });
+
+    return selectionContainer;
   };
 
   const setTodoStatus = (dueDate, priority, todoCard) => {
@@ -133,7 +153,6 @@ const view = (() => {
       const taskContainer = helper.createDiv('task-container');
       const taskNameCircleContainer = helper.createDiv('task-name-circle-container');
       const taskElement = setTask(task.name, taskNameCircleContainer);
-      const deleteProjectIcon = helper.createIcon('fa-solid', 'fa-xmark', 'fa-lg', 'hidden');
       if (task.isCompleted) {
         taskElement.classList.add('task-done');
       } else {
@@ -141,7 +160,7 @@ const view = (() => {
       }
       setTaskCheckCircle(todoId, taskNameCircleContainer, taskElement, task);
       taskContainer.appendChild(taskNameCircleContainer);
-      taskContainer.appendChild(deleteProjectIcon);
+      const deleteProjectIcon = helper.createIcon(taskContainer, 'fa-solid', 'fa-xmark', 'fa-lg', 'hidden');
       todoCard.appendChild(taskContainer);
       const divider = helper.createDiv('checklist-divide');
       const hr = document.createElement('hr');
@@ -155,7 +174,7 @@ const view = (() => {
       });
       deleteProjectIcon.addEventListener('click', () => {
         deleteTaskEvent(todoId, task.id);
-      })
+      });
     })
   };
 
@@ -189,7 +208,7 @@ const view = (() => {
   const addTodoCard = (todo) => {
     const todoCardContainer = helper.createDiv();
     const todoCard = helper.createDiv('todo-card');
-    setTodoTitle(todo.title, todoCard);
+    setTodoTitle(todo.todoId, todo.title, todoCard);
     setTodoStatus(todo.due, todo.priority, todoCard);
     setTodoDescription(todo.desc, todoCard);
     setTodoTasks(todo.todoId, todo.tasks, todoCard);
@@ -379,6 +398,10 @@ const view = (() => {
     deleteTaskEvent = callback;
   };
 
+  const bindDeleteTodo = (callback) => {
+    deleteTodoEvent = callback;
+  }
+
   addProjectButton.addEventListener('click', toggleProjectForm);
 
   return { 
@@ -400,6 +423,7 @@ const view = (() => {
       bindChangeProject,
       bindToggleTask,
       bindDeleteProject,
+      bindDeleteTodo,
       bindDeleteTask,
     }
 })();

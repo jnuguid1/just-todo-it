@@ -104,20 +104,7 @@ const controller = (() => {
   };
 
   const onTodoListChanged = () => {
-    const currentProject = user.getProjectById(currentProjectId);
-    const todoList = currentProject.getTodoList();
-    const addedTodo = todoList[todoList.length-1];
-    const todoObj = {
-      projectId: currentProjectId,
-      todoId: addedTodo.getId(),
-      title: addedTodo.getTitle(),
-      due: addedTodo.getDueDate(),
-      priority: addedTodo.getPriority(),
-      desc: addedTodo.getDescription(),
-      tasks: addedTodo.getCheckList().map(task => task.getName()),
-      notes: addedTodo.getNotes()
-    }
-    view.addTodoCard(todoObj);
+    onTaskListChanged();
   };
 
   const onProjectListChange = () => {
@@ -175,6 +162,12 @@ const controller = (() => {
     user.removeProject(project);
   };
 
+  const handleDeleteTodo = (todoId) => {
+    const project = user.getProjectById(currentProjectId);
+    const todo = project.getTodoById(todoId);
+    project.removeTodo(todo);
+  }
+
   const handleDeleteTask = (todoId, taskId) => {
     const project = user.getProjectById(currentProjectId);
     const todo = project.getTodoById(todoId);
@@ -193,6 +186,7 @@ const controller = (() => {
   view.bindToggleTask(handleTaskToggle);
   view.bindDeleteProject(handleDeleteProject);
   view.bindDeleteTask(handleDeleteTask);
+  view.bindDeleteTodo(handleDeleteTodo);
 
   return { initializeView };
 })();

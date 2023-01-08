@@ -20,6 +20,24 @@ const viewHelpers = (() => {
     return div;
   };
 
+  function createList(container) {
+    const list = document.createElement('ul');
+    container.appendChild(list);
+    for (let i = 1; i < arguments.length; i++) {
+      list.classList.add(`${arguments[i]}`);
+    }
+    return list;
+  };
+
+  function createListItem(list, text) {
+    const listItem = document.createElement('li');
+    if (text) {
+      listItem.textContent = text;
+    }
+    list.appendChild(listItem);
+    return listItem;
+  }
+
   function createInputForm(id, placeholder, container) {
     const input = document.createElement('input');
     if (id !== 'none') {
@@ -74,7 +92,7 @@ const viewHelpers = (() => {
       select.appendChild(options);
     }
     container.appendChild(select);
-  }
+  };
 
   /**
    * If insertPosition is 'before', argument[4] should be the
@@ -94,19 +112,22 @@ const viewHelpers = (() => {
       container.appendChild(textElement);
     }
     return textElement;
-  }
+  };
   
-  function createIcon() {
+  function createIcon(container) {
     const icon = document.createElement('i');
-    for (let i = 0; i < arguments.length; i++) {
+    for (let i = 1; i < arguments.length; i++) {
       icon.classList.add(`${arguments[i]}`);
     }
+    container.appendChild(icon);
     return icon;
-  }
+  };
 
   return {
     createDiv,
     createIdDiv,
+    createList,
+    createListItem,
     createInputForm,
     createTextAreaForm,
     createButtonForm,

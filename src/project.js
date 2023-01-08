@@ -50,6 +50,7 @@ const projectFactory = (name, description, id) => {
     if (index > -1) {
       todoList.splice(index, 1);
     }
+    onTodoListChanged();
   };
 
   const getId = () => {
