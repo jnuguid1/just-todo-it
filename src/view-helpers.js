@@ -109,23 +109,13 @@ const viewHelpers = (() => {
     container.appendChild(select);
   };
 
-  /**
-   * If insertPosition is 'before', argument[4] should be the
-   * node to insert before.
-   * If insertPosition is 'after' and there are classes to add,
-   * argument[4] should be filled with any value.
-   */
-  function createText(container, insertPosition, element, text) {
+  function createText(container, element, text) {
     const textElement = document.createElement(`${element}`);
     textElement.textContent = text;
-    for (let i = 5; i < arguments.length; i++) {
+    for (let i = 3; i < arguments.length; i++) {
       textElement.classList.add(`${arguments[i]}`);
     }
-    if (insertPosition === 'before') {
-      container.insertBefore(textElement, arguments[4]);
-    } else {
-      container.appendChild(textElement);
-    }
+    container.appendChild(textElement);
     return textElement;
   };
   

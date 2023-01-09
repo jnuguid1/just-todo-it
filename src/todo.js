@@ -11,9 +11,6 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   const getTaskIdCounter = () => {
     return taskIdCounter;
   };
-  const incrementTaskIdCounter = () => {
-    taskIdCounter += 1;
-  };
   const getId = () => {
     return id;
   };
@@ -52,6 +49,7 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   };
   const addTask = (task) => {
     checkList.push(task);
+    taskIdCounter += 1;
     onTaskListChange(id);
   };
   const removeTask = (task) => {
@@ -80,7 +78,6 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   return {
     getTaskById,
     getTaskIdCounter,
-    incrementTaskIdCounter,
     getId,
     setId,
     getTitle,

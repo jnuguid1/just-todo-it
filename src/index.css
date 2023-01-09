@@ -104,6 +104,10 @@ li {
   overflow-x: scroll;
 }
 
+#project-container h2{
+  cursor: pointer;
+}
+
 .nav-list {
   display: flex;
   flex-direction: column;

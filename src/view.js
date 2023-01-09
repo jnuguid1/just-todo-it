@@ -1,12 +1,11 @@
 import helper from './view-helpers';
 
 const view = (() => {
-  let currentProjectId;
   const sidebar = document.querySelector('#sidebar');
   const projects = document.querySelector('#projects');
   const addProjectButton = document.querySelector('#add-project-btn');
   const projectContainer = document.querySelector('#project-container');
-  let todoList = document.querySelector('#todo-list');
+  let todoList;
   const settings = document.querySelector('#settings');
   let showProjectFormEvent = () => {};
   let setTodoFormEvent = () => {};
@@ -18,10 +17,7 @@ const view = (() => {
   let deleteTodoEvent = () => {};
   let deleteTaskEvent = () => {};
   let minimizeTodoEvent = () => {};
-
-  const setCurrentProjectId = (id) => {
-    currentProjectId = id;
-  };
+  let getCurrentProjectId = () => {};
 
   const resetProjectView = () => {
     let element = projectContainer.lastElementChild;
@@ -52,7 +48,7 @@ const view = (() => {
     const deleteProjectIcon = helper.createIcon(projectListContainer, 'fa-solid', 'fa-xmark', 'fa-lg', 'hidden');
     projects.insertBefore(projectListContainer, addProjectButton);
     projectListItem.addEventListener('click', () => {
-      if (projectId !== currentProjectId) {
+      if (projectId !== getCurrentProjectId()) {
         setProjectSwitchEvent(projectId);
       }
     });
@@ -68,11 +64,20 @@ const view = (() => {
   };
 
   const setProjectTitle = (title) => {
-    helper.createText(projectContainer, 'before', 'h2', title, todoList, 'font-medium', 'mb-16');
+    const projectTitle = helper.createText(projectContainer, 'h2', title, 'font-medium', 'mb-16');
+    const projectEditForm = helper.createInputForm('project-edit-form', 'Enter a new project title', projectContainer);
+    projectTitle.addEventListener('click', () => {
+
+    })
   };
 
   const setProjectDescription = (description) => {
-    helper.createText(projectContainer, 'before', 'p', description, todoList, 'font-regular', 'mb-48');
+    helper.createText(projectContainer, 'p', description, 'font-regular', 'mb-48');
+  };
+
+  const setTodoList = () => {
+    todoList = helper.createIdDiv('todo-list');
+    projectContainer.appendChild(todoList);
   };
 
   const resetTodos = () => {
@@ -87,7 +92,7 @@ const view = (() => {
 
   const setTodoTitle = (todoId, title, todoCard, cardSection) => {
     const titleContainer = helper.createDiv('title-container');
-    helper.createText(titleContainer, 'after', 'h2', title, 'none', 'font-medium');
+    helper.createText(titleContainer, 'h2', title, 'font-medium');
     const ellipsis = helper.createIcon(titleContainer, 'fa-solid', 'fa-ellipsis-vertical', 'fa-lg', 'ellipsis-container');
     const floatingSelection = createFloatingSelection(todoId, titleContainer, cardSection);
     floatingSelection.classList.add('hidden');
@@ -119,8 +124,8 @@ const view = (() => {
 
   const setTodoStatus = (dueDate, priority, todoCard) => {
     const status = helper.createDiv('mb-16', 'status-container')
-    helper.createText(status, 'after', 'p', `Due: ${dueDate}`, 'none', 'font-small');
-    const priorityLabel = helper.createText(status, 'after', 'p', priority, 'none', 'font-small');
+    helper.createText(status, 'p', `Due: ${dueDate}`, 'font-small');
+    const priorityLabel = helper.createText(status, 'p', priority, 'font-small');
     if (priority.toLowerCase() === 'urgent') {
       priorityLabel.classList.add('priority-label-urgent');
     } else if (priority.toLowerCase() === 'normal') {
@@ -132,11 +137,11 @@ const view = (() => {
   };
 
   const setTodoDescription = (desc, todoCard) => {
-    helper.createText(todoCard, 'after', 'p', desc, 'none', 'mb-8');
+    helper.createText(todoCard, 'p', desc, 'mb-8');
   };
 
   const setTask = (task, container) => {
-    const taskName = helper.createText(container, 'after', 'p', task);
+    const taskName = helper.createText(container, 'p', task);
     return taskName;
   };
 
@@ -208,8 +213,8 @@ const view = (() => {
   }
 
   const setNotes = (notes, todoCard) => {
-    helper.createText(todoCard, 'after', 'h3', 'Notes', 'none', 'notes-heading');
-    helper.createText(todoCard, 'after', 'p', notes);
+    helper.createText(todoCard, 'h3', 'Notes', 'notes-heading');
+    helper.createText(todoCard, 'p', notes);
   };
 
   const addTodoCard = (todo) => {
@@ -273,7 +278,7 @@ const view = (() => {
           notes = document.querySelector(('#notes-input')).value;
         }
         const todo = {
-          projectId: currentProjectId,
+          projectId: getCurrentProjectId(),
           title: document.querySelector('#todo-title').value,
           due: document.querySelector('#due-date-input').value.replace('T', ' '),
           priority: document.querySelector('#priority-select').value,
@@ -285,36 +290,36 @@ const view = (() => {
       };
     }
 
-  form.addEventListener('submit', (event) => {
-    formEvent();
-    event.preventDefault();
-  }
-  );
-  todoTitle.addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-      event.preventDefault();
+    form.addEventListener('submit', (event) => {
       formEvent();
-    }
-  });
-  todoDescription.addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
       event.preventDefault();
-      formEvent();
     }
-  });
-  todoNotes.addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      formEvent();
-    }
-  });
-  container.appendChild(form);
+    );
+    todoTitle.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        formEvent();
+      }
+    });
+    todoDescription.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        formEvent();
+      }
+    });
+    todoNotes.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        formEvent();
+      }
+    });
+    container.appendChild(form);
 
-  function showError() {
-    if (todoTitle.validity.valueMissing) {
-      titleError.textContent = 'You need to enter a title.';
+    function showError() {
+      if (todoTitle.validity.valueMissing) {
+        titleError.textContent = 'You need to enter a title.';
+      }
     }
-  }
   };
 
   const setAddTodoButton = () => {
@@ -421,13 +426,17 @@ const view = (() => {
     minimizeTodoEvent = callback;
   }
 
+  const bindGetCurrentProjectId = (callback) => {
+    getCurrentProjectId = callback;
+  }
+
   addProjectButton.addEventListener('click', toggleProjectForm);
 
   return { 
       resetProjectView,
       resetProjectList,
       resetTodos,
-      setCurrentProjectId,
+      setTodoList,
       setProjectTitle,
       setProjectDescription,
       addTodoCard,
@@ -444,7 +453,8 @@ const view = (() => {
       bindDeleteProject,
       bindDeleteTodo,
       bindDeleteTask,
-      bindMinimizeTodo
+      bindMinimizeTodo,
+      bindGetCurrentProjectId
     }
 })();
 

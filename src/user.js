@@ -7,10 +7,6 @@ const user = (() => {
   let projectIdCounter = 0;
   let onProjectsListChanged = () => {};
 
-  const incrementProjectIdCounter = () => {
-    projectIdCounter += 1;
-  };
-
   const getProjectIdCounter = () => {
     return projectIdCounter;
   };
@@ -23,7 +19,7 @@ const user = (() => {
   };
   const addProject = (project) => {
     projects.push(project);
-
+    projectIdCounter += 1;
     onProjectsListChanged();
   };
   const removeProject = (project) => {
@@ -44,8 +40,8 @@ const user = (() => {
     removeProject, 
     bindProjectListChanged,
     getProjectById,
-    incrementProjectIdCounter,
-    getProjectIdCounter };
+    getProjectIdCounter 
+  };
 })();
 
 export default user;

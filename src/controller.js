@@ -3,30 +3,28 @@ import projectFactory from './project'
 import todoFactory from "./todo";
 import taskFactory from "./task";
 import view from './view';
+import moment from "moment";
 
 const controller = (() => {
   let currentProjectId = user.getProjectIdCounter();
 
   const initializeUser = () => {
     const projectName = 'Your Project';
-    const projectDesc = 'This is your project. This text blurb is your project description, put anything here.';
+    const projectDesc = 'This is your project. Add your todos here. This text blurb is your project description, put anything here.';
     const projectId = user.getProjectIdCounter();
     currentProjectId = user.getProjectIdCounter();
-    user.incrementProjectIdCounter();
     const firstProject = projectFactory(projectName, projectDesc, projectId);
     firstProject.bindOnTodoListChanged(onTodoListChanged);
     const todoId = firstProject.getTodoIdCounter();
-    firstProject.incrementTodoIdCounter();
     const todoTitle = 'To do';
-    const todoDesc = 'This is a todo. Add checklist tasks, due dates, and priorities here.';
-    const dueDate = 'Tues, 10: 30 am';
+    const todoDesc = 'This is a todo. This text blurb is the editable todo description.';
+    const dueDate = `${moment().format('YYYY-MM-DD h:mm')}`;
     const priority = 'Urgent';
     const notes = 'Add notes and any additional thoughts here';
     const firstTodo = todoFactory(todoId, todoTitle, todoDesc, dueDate, priority, notes);
     const taskName = 'Make your first task';
     const firstTask = taskFactory(taskName, firstTodo.getTaskIdCounter());
     firstTodo.addTask(firstTask);
-    firstTodo.incrementTaskIdCounter();
     firstProject.initialAddTodo(firstTodo);
     user.addProject(firstProject);
   }
@@ -37,27 +35,26 @@ const controller = (() => {
     });
   };
 
+  const loadProject = (project) => {
+    view.setProjectTitle(project.getName());
+    view.setProjectDescription(project.getDescription());
+    view.setTodoList();
+    view.setAddTodoButton();
+    addTodos(project);
+  }
+
   const initializeProjectView = () => {
     if (user.getProjects().length !== 0) {
       const project = user.getProjects()[0];
-      view.setCurrentProjectId(project.getId());
-      view.setProjectTitle(project.getName());
-      view.setProjectDescription(project.getDescription());
-      view.setAddTodoButton();
-      addTodos(project);
+      loadProject(project);
     }
   };
 
-  const loadProject = (id) => {
+  const loadNewProject = (id) => {
     view.resetProjectView();
-    const projects = user.getProjects();
-    const projectTarget = projects.find(project => project.getId() === id);
+    const projectTarget = user.getProjectById(id);
     currentProjectId = id;
-    view.setCurrentProjectId(projectTarget.getId());
-    view.setProjectTitle(projectTarget.getName());
-    view.setProjectDescription(projectTarget.getDescription());
-    view.setAddTodoButton();
-    addTodos(projectTarget);
+    loadProject(projectTarget);
   }
 
   const initializeView = () => {
@@ -97,20 +94,24 @@ const controller = (() => {
     view.bindSubmitTodo(handleSubmitTodo);
   };
 
-  // Temporary implementation. In future reset only the task list of a
-  // todo card instead of all the todo cards in a project.
-  const onTaskListChanged = () => {
+  const refreshTodoList = () => {
     const currentProject = user.getProjectById(currentProjectId);
     view.resetTodos();
     addTodos(currentProject);
   };
 
+  // Temporary implementation. In future reset only the task list of a
+  // todo card instead of all the todo cards in a project.
+  const onTaskListChanged = () => {
+    refreshTodoList();
+  };
+
   const onTodoListChanged = () => {
-    onTaskListChanged();
+    refreshTodoList();
   };
 
   const onTodoChanged = () => {
-    onTaskListChanged();
+    refreshTodoList();
   }
 
   const onProjectListChange = () => {
@@ -121,21 +122,19 @@ const controller = (() => {
   };
 
   const onProjectSwitch = (id) => {
-    loadProject(id);
+    loadNewProject(id);
   };
 
   const handleSubmitTask = (projectId, todoId, taskName) => {
     const projectTarget = user.getProjectById(projectId);
     const todoTarget = projectTarget.getTodoById(todoId);
     const newTask = taskFactory(taskName, todoTarget.getTaskIdCounter());
-    todoTarget.incrementTaskIdCounter();
     todoTarget.addTask(newTask);
   }
 
   const handleSubmitTodo = (todo) => {
     const currentProject = user.getProjectById(todo.projectId);
     const todoId = currentProject.getTodoIdCounter();
-    currentProject.incrementTodoIdCounter();
     const newTodo = todoFactory(
       todoId,
       todo.title,
@@ -153,7 +152,6 @@ const controller = (() => {
     const newProject = projectFactory(name, desc, user.getProjectIdCounter());
     newProject.bindOnTodoListChanged(onTodoListChanged);
     user.addProject(newProject);
-    user.incrementProjectIdCounter();
   };
 
   const handleTaskToggle = (todoId, taskId) => {
@@ -186,6 +184,10 @@ const controller = (() => {
     const todo = project.getTodoById(todoId);
     todo.toggleMinimize();
   };
+
+  const getCurrentProjectId = () => {
+    return currentProjectId;
+  }
   
   initializeUser();
   view.bindAddTask(handleSubmitTask);
@@ -198,6 +200,7 @@ const controller = (() => {
   view.bindDeleteTask(handleDeleteTask);
   view.bindDeleteTodo(handleDeleteTodo);
   view.bindMinimizeTodo(handleMinimizeTodo);
+  view.bindGetCurrentProjectId(getCurrentProjectId);
 
   return { initializeView };
 })();
