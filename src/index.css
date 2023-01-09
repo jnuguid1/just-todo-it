@@ -393,3 +393,13 @@ li {
   background-color: white;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.12);
 }
+
+#project-edit-form {
+  background-color: var(--secondary-color);
+  border: none;
+  font-size: 1.5rem;
+}
+
+#project-edit-form:focus {
+  outline: none;
+}

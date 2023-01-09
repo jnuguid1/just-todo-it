@@ -2,6 +2,7 @@ const projectFactory = (name, description, id) => {
   const todoList = [];
   let todoIdCounter = 0;
   let onTodoListChanged = () => {};
+  let onNameChanged = () => {};
 
   const getTodoById = (id) => {
     return todoList.find(todo => todo.getId() === id);
@@ -27,9 +28,6 @@ const projectFactory = (name, description, id) => {
   const editDescription = (newDesc) => {
     description = newDesc;
   };
-  const initialAddTodo = (todo) => {
-    todoList.push(todo);
-  };
   const addTodo = (todo) => {
     todoList.push(todo);
     todoIdCounter += 1;
@@ -51,6 +49,9 @@ const projectFactory = (name, description, id) => {
   const bindOnTodoListChanged = (callback) => {
     onTodoListChanged = callback;
   };
+  const bindOnNameChanged = (callback) => {
+    onNameChanged = callback;
+  }
 
   return { 
     getTodoById,
@@ -61,12 +62,12 @@ const projectFactory = (name, description, id) => {
     copyProject,
     editName,
     editDescription,
-    initialAddTodo,
     addTodo,
     removeTodo,
     getId,
     setId,
-    bindOnTodoListChanged
+    bindOnTodoListChanged,
+    bindOnNameChanged
   };
 };
 

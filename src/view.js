@@ -18,6 +18,7 @@ const view = (() => {
   let deleteTaskEvent = () => {};
   let minimizeTodoEvent = () => {};
   let getCurrentProjectId = () => {};
+  let editProjectNameEvent = () => {};
 
   const resetProjectView = () => {
     let element = projectContainer.lastElementChild;
@@ -63,13 +64,35 @@ const view = (() => {
     });
   };
 
-  const setProjectTitle = (title) => {
-    const projectTitle = helper.createText(projectContainer, 'h2', title, 'font-medium', 'mb-16');
-    const projectEditForm = helper.createInputForm('project-edit-form', 'Enter a new project title', projectContainer);
-    projectTitle.addEventListener('click', () => {
-
+  const setProjectName = (title) => {
+    const projectName = helper.createText(projectContainer, 'h2', title, 'font-medium', 'mb-16');
+    const projectEditForm = helper.createInputForm('project-edit-form', 'Enter a new project title', projectContainer, 'hidden', 'mb-16');
+    projectName.id = 'project-title';
+    projectName.addEventListener('click', () => {
+      projectName.classList.toggle('hidden');
+      projectEditForm.classList.toggle('hidden');
+      projectEditForm.focus();
+    });
+    projectEditForm.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        console.log(projectEditForm.value);
+        if (projectEditForm.value === '') {
+          projectName.classList.toggle('hidden');
+          projectEditForm.classList.toggle('hidden');
+        } else {
+          editProjectNameEvent(projectEditForm.value);
+        }
+      } else if (event.key === 'Escape') {
+        projectName.classList.toggle('hidden');
+        projectEditForm.classList.toggle('hidden');
+      }
     })
   };
+
+  const updateProjectName = (title) => {
+    projectName = document.querySelector('#project-title');
+    projectName.textContent = projectName;
+  }
 
   const setProjectDescription = (description) => {
     helper.createText(projectContainer, 'p', description, 'font-regular', 'mb-48');
@@ -420,15 +443,19 @@ const view = (() => {
 
   const bindDeleteTodo = (callback) => {
     deleteTodoEvent = callback;
-  }
+  };
 
   const bindMinimizeTodo = (callback) => {
     minimizeTodoEvent = callback;
-  }
+  };
 
   const bindGetCurrentProjectId = (callback) => {
     getCurrentProjectId = callback;
-  }
+  };
+
+  const bindEditProjectName = (callback) => {
+    editProjectNameEvent = callback;
+  };
 
   addProjectButton.addEventListener('click', toggleProjectForm);
 
@@ -437,7 +464,8 @@ const view = (() => {
       resetProjectList,
       resetTodos,
       setTodoList,
-      setProjectTitle,
+      setProjectName,
+      updateProjectName,
       setProjectDescription,
       addTodoCard,
       setProjectListItem,
@@ -454,7 +482,8 @@ const view = (() => {
       bindDeleteTodo,
       bindDeleteTask,
       bindMinimizeTodo,
-      bindGetCurrentProjectId
+      bindGetCurrentProjectId,
+      bindEditProjectName
     }
 })();
 

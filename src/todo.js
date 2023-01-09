@@ -67,11 +67,11 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
     return isMinimized;
   };
 
-  const bindOnTaskListChange = (callback) => {
+  const bindOnTaskListChanged = (callback) => {
     onTaskListChange = callback;
   };
 
-  const bindOnTodoChange = (callback) => {
+  const bindOnTodoChanged = (callback) => {
     onTodoChange = callback;
   }
   
@@ -92,8 +92,8 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
     editNotes,
     addTask,
     removeTask,
-    bindOnTaskListChange,
-    bindOnTodoChange,
+    bindOnTaskListChanged,
+    bindOnTodoChanged,
     toggleMinimize,
     checkIsMinimized,
   }
