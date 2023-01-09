@@ -1,15 +1,13 @@
 import helper from './view-helpers';
 
 const view = (() => {
-  const sidebar = document.querySelector('#sidebar');
-  const projects = document.querySelector('#projects');
-  const addProjectButton = document.querySelector('#add-project-btn');
-  const projectContainer = document.querySelector('#project-container');
+  let projectsList;
+  let addProjectButton;
+  let sidebar;
+  let projectContainer;
   let todoList;
-  const settings = document.querySelector('#settings');
-  let showProjectFormEvent = () => {};
-  let setTodoFormEvent = () => {};
   let setProjectSwitchEvent = () => {};
+  let addProjectEvent = () => {};
   let addTodoEvent = () => {};
   let addTaskEvent = () => {};
   let toggleTaskEvent = () => {};
@@ -31,13 +29,13 @@ const view = (() => {
   };
 
   const resetProjectList = () => {
-    let element = projects.firstElementChild;
+    let element = projectsList.firstElementChild;
     while (element) {
       if (element.id === 'add-project-btn') {
         break;
       } else {
-        projects.removeChild(element);
-        element = projects.firstElementChild;
+        projectsList.removeChild(element);
+        element = projectsList.firstElementChild;
       } 
     }
   };
@@ -47,7 +45,7 @@ const view = (() => {
     const projectListItem = helper.createListItem(projectListContainer, project);
     projectListItem.setAttribute('project-id', projectId);
     const deleteProjectIcon = helper.createIcon(projectListContainer, 'fa-solid', 'fa-xmark', 'fa-lg', 'hidden');
-    projects.insertBefore(projectListContainer, addProjectButton);
+    projectsList.insertBefore(projectListContainer, addProjectButton);
     projectListItem.addEventListener('click', () => {
       if (projectId !== getCurrentProjectId()) {
         setProjectSwitchEvent(projectId);
@@ -275,7 +273,7 @@ const view = (() => {
     helper.createSelectForm('priority-select', form, 'Priority', 'Urgent', 'Normal', 'Unimportant')
     const todoDescription = helper.createTextAreaForm('description-textarea', 'Description', form);
     const todoNotes = helper.createTextAreaForm('notes-input', 'Notes', form);
-     helper.createButtonForm('button', 'todo-submit-btn', 'SUBMIT', form);
+    helper.createButtonForm('button', 'todo-submit-btn', 'SUBMIT', form);
     todoTitle.required = true;
 
     todoTitle.addEventListener('input', () => {
@@ -352,7 +350,6 @@ const view = (() => {
     setTodoForm(todoFormContainer);
     addTodoContainer.appendChild(todoFormContainer);
     todoList.appendChild(addTodoContainer);
-    setTodoFormEvent();
 
     addTodoButton.addEventListener('click', () => {
       todoFormContainer.style.display === 'flex' ?
@@ -361,19 +358,26 @@ const view = (() => {
     })
   };
 
-  const toggleProjectForm = () => {
-    const projectFormContainer = document.querySelector('#project-form-container');
-    if (projectFormContainer) {
-      (projectFormContainer.style.display === 'none') ? 
-        projectFormContainer.style.display = 'flex' :
-        projectFormContainer.style.display = 'none';
-    } else {
-      const formContainer = helper.createIdDiv('project-form-container');
-      const nameForm = helper.createInputForm('project-name-form', 'Enter the project name', formContainer);
-      const formSubmit = helper.createButtonForm('button', 'submit-project-button', 'ENTER', formContainer);
-      sidebar.insertBefore(formContainer, settings);
-      showProjectFormEvent();
+  const setProjectForm = () => {
+    const projectFormContainer = helper.createIdDiv('project-form-container', 'hidden');
+    const nameForm = helper.createInputForm('project-name-form', 'Enter the project name', projectFormContainer);
+    const formSubmit = helper.createButtonForm('button', 'submit-project-button', 'ENTER', projectFormContainer);
+    projectsList.appendChild(projectFormContainer);
+
+    const formEvent = () => {
+      const projectName = nameForm.value;
+      addProjectEvent(projectName);
+      resetProjectSubmitForm();
     }
+    formSubmit.addEventListener('click', formEvent);
+    nameForm.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        formEvent();
+      }
+    })
+    
+    return projectFormContainer;
   };
 
   const resetTodoSubmitForm = () => {
@@ -389,7 +393,8 @@ const view = (() => {
     const projectNameForm = document.querySelector('#project-name-form');
     projectNameForm.value = '';
     const projectFormContainer = document.querySelector('#project-form-container');
-    projectFormContainer.style.display = 'none';
+    projectFormContainer.classList.toggle('hidden');
+    projectFormContainer.classList.toggle('flex');
   };
 
   const bindChangeProject = (callback) => {
@@ -400,33 +405,12 @@ const view = (() => {
     addTaskEvent = callback;
   };
 
-  const bindSubmitTodo = (callback) => {
-    addTodoEvent = callback;
-  };
-
   const bindAddTodo = (callback) => {
-    setTodoFormEvent = callback;
+    addTodoEvent = callback;
   }
 
   const bindAddProject = (callback) => {
-    showProjectFormEvent = callback;
-  };
-
-  const bindSubmitProject = (handler) => {
-    const submitButton = document.querySelector('#submit-project-button');
-    const projectNameForm = document.querySelector('#project-name-form');
-    const formEvent = () => {
-      const projectName = projectNameForm.value;
-      handler(projectName);
-      resetProjectSubmitForm();
-    }
-    submitButton.addEventListener('click', formEvent);
-    projectNameForm.addEventListener('keypress', function(event) {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        formEvent();
-      }
-    })
+    addProjectEvent = callback;
   };
 
   const bindToggleTask = (callback) => {
@@ -457,9 +441,30 @@ const view = (() => {
     editProjectNameEvent = callback;
   };
 
-  addProjectButton.addEventListener('click', toggleProjectForm);
+  const initializeView = () => {
+    const container = document.querySelector('#container');
+    sidebar = helper.createIdDiv('sidebar', 'primary-color', 'p-24');
+    projectContainer = helper.createIdDiv('project-container', 'secondary-color', 'p-48');
+    helper.createText(sidebar, 'h1', 'Just Todo It', 'font-large');
+    helper.createText(sidebar, 'h2', 'Projects', 'font-medium', 'm-16');
+    projectsList = helper.createList(sidebar, 'nav-list');
+    projectsList.id = 'projects-list';
+    addProjectButton = helper.createListItem(projectsList, 'Add Project', 'grey-font');
+    addProjectButton.id = 'add-project-btn';
+    const projectFormContainer = setProjectForm();
+    container.appendChild(sidebar);
+    container.appendChild(projectContainer);
+
+    addProjectButton.addEventListener('click', () => {
+      // The project form container starts with just the hidden class so
+      // the event listener will turn off hidden and turn on flex and vice versa.
+      projectFormContainer.classList.toggle('flex');
+      projectFormContainer.classList.toggle('hidden');
+    });
+  }
 
   return { 
+      initializeView,
       resetProjectView,
       resetProjectList,
       resetTodos,
@@ -470,12 +475,9 @@ const view = (() => {
       addTodoCard,
       setProjectListItem,
       setAddTodoButton,
-      bindSubmitProject,
       bindAddProject,
-      toggleProjectForm,
       bindAddTodo,
       bindAddTask,
-      bindSubmitTodo,
       bindChangeProject,
       bindToggleTask,
       bindDeleteProject,

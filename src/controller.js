@@ -86,6 +86,7 @@ const controller = (() => {
   }
 
   const initializeView = () => {
+    view.initializeView();
     initializeSidebarView();
     initializeProjectView();
   };
@@ -112,10 +113,6 @@ const controller = (() => {
       todo.bindOnTodoChanged(onTodoChanged);
       view.addTodoCard(todoObj);
     });
-  };
-
-  const addSubmitProjectEvent = () => {
-    view.bindSubmitProject(handleSubmitProject);
   };
 
   const addSubmitTodoEvent = () => {
@@ -163,7 +160,7 @@ const controller = (() => {
     addNewTask(todoTarget, taskName, todoTarget.getTaskIdCounter());
   }
 
-  const handleSubmitTodo = (todo) => {
+  const handleAddTodo = (todo) => {
     const currentProject = user.getProjectById(todo.projectId);
     const todoId = currentProject.getTodoIdCounter();
     addNewTodo(currentProject, 
@@ -176,7 +173,7 @@ const controller = (() => {
     );
   }
 
-  const handleSubmitProject = (name) => {
+  const handleAddProject = (name) => {
     const desc = 'This is your project. This text blurb is your project description, put anything here.';
     addNewProject(name, desc, user.getProjectIdCounter());
   };
@@ -218,8 +215,8 @@ const controller = (() => {
   };
 
   view.bindAddTask(handleSubmitTask);
-  view.bindAddTodo(addSubmitTodoEvent);
-  view.bindAddProject(addSubmitProjectEvent);
+  view.bindAddTodo(handleAddTodo);
+  view.bindAddProject(handleAddProject);
   user.bindProjectListChanged(onProjectListChanged);
   view.bindChangeProject(onProjectSwitch);
   view.bindToggleTask(handleTaskToggle);

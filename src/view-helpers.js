@@ -34,6 +34,9 @@ const viewHelpers = (() => {
     if (text) {
       listItem.textContent = text;
     }
+    for (let i = 2; i < arguments.length; i++) {
+      listItem.classList.add(`${arguments[i]}`);
+    }
     list.appendChild(listItem);
     return listItem;
   }
