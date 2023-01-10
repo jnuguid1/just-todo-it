@@ -13,6 +13,8 @@
   --normal-primary-color: #00952A;
   --normal-secondary-color: #94FFB2;
   --error-color: #bd0303;
+  --project-title-height: 33.315px;
+  --project-description-height: 21.041px;
   --pointer: pointer;
   font-size: 16px;
   font-family: 'Nunito', 'Roboto', 'sans-serif';
@@ -26,6 +28,10 @@ body, h1, h2, h3, p, ul, li {
 
 li {
   list-style: none;
+}
+
+#project-title, #project-description, .todo-card h2 {
+  cursor: pointer;
 }
 
 .font-large {
@@ -84,6 +90,14 @@ li {
   margin-bottom: 48px;
 }
 
+.inline {
+  display: inline;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
 .flex {
   display: flex;
 }
@@ -106,10 +120,6 @@ li {
 
 #project-container {
   overflow-x: scroll;
-}
-
-#project-container h2{
-  cursor: pointer;
 }
 
 .nav-list {
@@ -151,6 +161,35 @@ li {
   grid-auto-columns: 350px;
   grid-auto-flow: column;
   gap: 24px;
+}
+
+#project-desc-edit-input,
+#project-title-edit-input,
+.todo-title-edit-input {
+  padding: 0;
+  border: none;
+}
+
+#project-desc-edit-input,
+#project-title-edit-input {
+  background-color: var(--secondary-color);
+}
+
+#project-title-edit-input,
+.todo-title-edit-input {
+  height: var(--project-title-height);
+  font-size: 1.5rem;
+}
+
+#project-desc-edit-input {
+  height: var(--project-description-height);
+  font-size: 1rem;
+}
+
+#project-title-edit-input:focus,
+#project-desc-edit-input:focus,
+.todo-title-edit-input {
+  outline: none;
 }
 
 .todo-card {
@@ -395,14 +434,4 @@ li {
   border-radius: 4px;
   background-color: white;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.12);
-}
-
-#project-edit-form {
-  background-color: var(--secondary-color);
-  border: none;
-  font-size: 1.5rem;
-}
-
-#project-edit-form:focus {
-  outline: none;
 }

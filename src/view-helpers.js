@@ -131,6 +131,12 @@ const viewHelpers = (() => {
     return icon;
   };
 
+  function toggleVisibility() {
+    for (let i = 0; i < arguments.length; i++) {
+      arguments[i].classList.toggle('hidden');
+    }
+  }
+
   return {
     createDiv,
     createIdDiv,
@@ -143,7 +149,8 @@ const viewHelpers = (() => {
     createButtonForm,
     createSelectForm,
     createText,
-    createIcon
+    createIcon,
+    toggleVisibility
   };
 })();
 

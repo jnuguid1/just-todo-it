@@ -1,8 +1,8 @@
 const todoFactory = (id, title, description, dueDate, priority, notes) => {
   const checkList = [];
   let taskIdCounter = 0;
-  let onTaskListChange = () => {};
-  let onTodoChange = () => {};
+  let onTaskListChanged = () => {};
+  let onTodoTitleChanged = () => {};
   let isMinimized = false;
 
   const getTaskById = (id) => {
@@ -37,10 +37,14 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   }
   const editTitle = (newTitle) => {
     title = newTitle;
+    onTodoTitleChanged(id);
   };
   const editDescription = (newDesc) => {
     description = newDesc;
   };
+  const editPriority = (newPriority) => {
+    priority = newPriority;
+  }
   const editDueDate = (newDueDate) => {
     dueDate = newDueDate;
   };
@@ -50,14 +54,14 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   const addTask = (task) => {
     checkList.push(task);
     taskIdCounter += 1;
-    onTaskListChange(id);
+    onTaskListChanged(id);
   };
   const removeTask = (task) => {
     const index = checkList.indexOf(task);
     if (index > -1) {
       checkList.splice(index, 1);
     }
-    onTaskListChange();
+    onTaskListChanged();
   };
   const toggleMinimize = () => {
     isMinimized = !isMinimized;
@@ -67,12 +71,29 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
     return isMinimized;
   };
 
-  const bindOnTaskListChanged = (callback) => {
-    onTaskListChange = callback;
-  };
-
-  const bindOnTodoChanged = (callback) => {
-    onTodoChange = callback;
+  const bindTodoCallback = (event, callback) => {
+    switch (event) {
+      case 'taskListChanged':
+        onTaskListChanged = callback;
+        break;
+      case 'todoTitleChanged':
+        onTodoTitleChanged = callback;
+        break;
+      case 'todoDescChanged':
+        onTodoDescChanged = callback;
+        break;
+      case 'todoDueDateChanged':
+        onTodoDueDateChanged = callback;
+        break;
+      case 'todoPriorityChanged':
+        onTodoPriorityChanged = callback;
+        break;
+      case 'todoNotesChanged':
+        onoTodoNotesChanged = callback;
+        break;
+      default:
+        console.error('bindTodoCallback error');
+    }
   }
   
   return {
@@ -89,13 +110,13 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
     editTitle,
     editDescription,
     editDueDate,
+    editPriority,
     editNotes,
     addTask,
     removeTask,
-    bindOnTaskListChanged,
-    bindOnTodoChanged,
     toggleMinimize,
     checkIsMinimized,
+    bindTodoCallback,
   }
 };
 

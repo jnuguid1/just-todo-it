@@ -17,6 +17,12 @@ const view = (() => {
   let minimizeTodoEvent = () => {};
   let getCurrentProjectId = () => {};
   let editProjectNameEvent = () => {};
+  let editProjectDescEvent = () => {};
+  let editTodoTitleEvent  = () => {};
+  let editTodoDueEvent = () => {};
+  let editTodoPriorityEvent  = () => {};
+  let editTodoDescriptionEvent = () => {};
+  let editTodoNotesEvent = () => {};
 
   const resetProjectView = () => {
     let element = projectContainer.lastElementChild;
@@ -62,38 +68,48 @@ const view = (() => {
     });
   };
 
-  const setProjectName = (title) => {
-    const projectName = helper.createText(projectContainer, 'h2', title, 'font-medium', 'mb-16');
-    const projectEditForm = helper.createInputForm('project-edit-form', 'Enter a new project title', projectContainer, 'hidden', 'mb-16');
-    projectName.id = 'project-title';
-    projectName.addEventListener('click', () => {
-      projectName.classList.toggle('hidden');
-      projectEditForm.classList.toggle('hidden');
-      projectEditForm.focus();
+  const addInputEditListeners = (text, input, handler, id) => {
+    text.addEventListener('click', () => {
+      helper.toggleVisibility(text, input);
+      input.focus();
     });
-    projectEditForm.addEventListener('keydown', (event) => {
+    input.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
-        console.log(projectEditForm.value);
-        if (projectEditForm.value === '') {
-          projectName.classList.toggle('hidden');
-          projectEditForm.classList.toggle('hidden');
+        if (input.value === '') {
+          helper.toggleVisibility(text, input);
         } else {
-          editProjectNameEvent(projectEditForm.value);
+          handler(input.value, id);
+          helper.toggleVisibility(text, input);
+          input.value = '';
         }
       } else if (event.key === 'Escape') {
-        projectName.classList.toggle('hidden');
-        projectEditForm.classList.toggle('hidden');
+        helper.toggleVisibility(text, input);
+        input.value = '';
       }
     })
+  }
+
+  // Need to append a br element because title and description were made inline-block.
+  // They are inline-block so that the element width doesn't inherit parent width.
+  const setProjectName = (title) => {
+    const projectName = helper.createText(projectContainer, 'h2', title, 'font-medium', 'mb-16', 'inline-block');
+    const projectTitleEditInput = helper.createInputForm('project-title-edit-input', 'Enter a new project title', projectContainer, 'hidden', 'mb-16');
+    projectName.id = 'project-title';
+    projectContainer.appendChild(document.createElement('br'));
+    addInputEditListeners(projectName, projectTitleEditInput, editProjectNameEvent);
   };
 
-  const updateProjectName = (title) => {
-    projectName = document.querySelector('#project-title');
-    projectName.textContent = projectName;
+  const updateText = (elementId, text) => {
+    const element = document.querySelector(elementId);
+    element.textContent = text;
   }
 
   const setProjectDescription = (description) => {
-    helper.createText(projectContainer, 'p', description, 'font-regular', 'mb-48');
+    const projectDescription = helper.createText(projectContainer, 'p', description, 'font-regular', 'mb-48', 'inline-block');
+    const projectDescEditInput = helper.createInputForm('project-desc-edit-input', 'Enter a new project description', projectContainer, 'hidden', 'mb-48');
+    projectDescription.id = 'project-description';
+    projectDescEditInput.size = '60';
+    addInputEditListeners(projectDescription, projectDescEditInput, editProjectDescEvent);
   };
 
   const setTodoList = () => {
@@ -113,7 +129,12 @@ const view = (() => {
 
   const setTodoTitle = (todoId, title, todoCard, cardSection) => {
     const titleContainer = helper.createDiv('title-container');
-    helper.createText(titleContainer, 'h2', title, 'font-medium');
+    const todoTitle = helper.createText(titleContainer, 'h2', title, 'font-medium');
+    const todoTitleEditInput = helper.createInputForm('none', 'Enter a new title', titleContainer, 'hidden');
+    todoTitleEditInput.classList.add('todo-title-edit-input');
+    todoTitleEditInput.size = '10';
+    addInputEditListeners(todoTitle, todoTitleEditInput, editTodoTitleEvent, todoId);
+
     const ellipsis = helper.createIcon(titleContainer, 'fa-solid', 'fa-ellipsis-vertical', 'fa-lg', 'ellipsis-container');
     const floatingSelection = createFloatingSelection(todoId, titleContainer, cardSection);
     floatingSelection.classList.add('hidden');
@@ -243,6 +264,7 @@ const view = (() => {
     const todoCard = helper.createDiv('todo-card');
     const cardTopSection = helper.createDiv('card-top-section');
     const cardBottomSection = helper.createDiv('card-bottom-section');
+    todoCard.id = `todo-${todo.todoId}`
     if (todo.isMinimized === true) {
       cardBottomSection.classList.add('hidden');
     }
@@ -397,48 +419,63 @@ const view = (() => {
     projectFormContainer.classList.toggle('flex');
   };
 
-  const bindChangeProject = (callback) => {
-    setProjectSwitchEvent = callback;
-  };
-
-  const bindAddTask = (callback) => {
-    addTaskEvent = callback;
-  };
-
-  const bindAddTodo = (callback) => {
-    addTodoEvent = callback;
-  }
-
-  const bindAddProject = (callback) => {
-    addProjectEvent = callback;
-  };
-
-  const bindToggleTask = (callback) => {
-    toggleTaskEvent = callback;
-  };
-
-  const bindDeleteProject = (callback) => {
-    deleteProjectEvent = callback;
-  };
-
-  const bindDeleteTask = (callback) => {
-    deleteTaskEvent = callback;
-  };
-
-  const bindDeleteTodo = (callback) => {
-    deleteTodoEvent = callback;
-  };
-
-  const bindMinimizeTodo = (callback) => {
-    minimizeTodoEvent = callback;
-  };
-
-  const bindGetCurrentProjectId = (callback) => {
-    getCurrentProjectId = callback;
-  };
-
-  const bindEditProjectName = (callback) => {
-    editProjectNameEvent = callback;
+  const bindCallback = (event, callback) => {
+    switch (event) {
+      case 'getCurrentId':
+        getCurrentProjectId = callback;
+        break;
+      case 'changeProject':
+        setProjectSwitchEvent = callback;
+        break;
+      case 'addProject':
+        addProjectEvent = callback;
+        break;
+      case 'addTodo':
+        addTodoEvent = callback;
+        break;
+      case 'addTask':
+        addTaskEvent = callback;
+        break;
+      case 'deleteProject':
+        deleteProjectEvent = callback;
+        break;
+      case 'deleteTodo':
+        deleteTodoEvent = callback;
+        break;
+      case 'deleteTask':
+        deleteTaskEvent = callback;
+        break;
+      case 'minimizeTodo':
+        minimizeTodoEvent = callback;
+        break;
+      case 'toggleTask':
+        toggleTaskEvent = callback;
+        break;
+      case 'editProjectName':
+        editProjectNameEvent = callback;
+        break;
+      case 'editProjectDesc':
+        editProjectDescEvent = callback;
+        break;
+      case 'editTodoTitle':
+        editTodoTitleEvent = callback;
+        break;
+      case 'editTodoDue':
+        editTodoDueEvent = callback;
+        break;
+      case 'editTodoPriority':
+        editTodoPriorityEvent = callback;
+        break;
+      case 'editTodoDesc':
+        editTodoDescriptionEvent = callback;
+        break;
+      case 'editTodoNotes':
+        editTodoNotesEvent = callback;
+        break;
+      default:
+        console.error('callback bind error');
+      
+    }
   };
 
   const initializeView = () => {
@@ -470,22 +507,12 @@ const view = (() => {
       resetTodos,
       setTodoList,
       setProjectName,
-      updateProjectName,
+      updateText,
       setProjectDescription,
       addTodoCard,
       setProjectListItem,
       setAddTodoButton,
-      bindAddProject,
-      bindAddTodo,
-      bindAddTask,
-      bindChangeProject,
-      bindToggleTask,
-      bindDeleteProject,
-      bindDeleteTodo,
-      bindDeleteTask,
-      bindMinimizeTodo,
-      bindGetCurrentProjectId,
-      bindEditProjectName
+      bindCallback
     }
 })();
 

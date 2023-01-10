@@ -20,13 +20,15 @@ const controller = (() => {
     const project = projectFactory(name, desc, id);
     project.bindOnTodoListChanged(onTodoListChanged);
     project.bindOnNameChanged(onProjectNameChanged);
+    project.bindOnDescChanged(onProjectDescChanged);
     user.addProject(project);
     return project;
   };
 
   const addNewTodo = (project, id, title, desc, dueDate, priority, notes) => {
     const todo = todoFactory(id, title, desc, dueDate, priority, notes);
-    todo.bindOnTaskListChanged(onTaskListChanged);
+    todo.bindTodoCallback('taskListChanged', onTaskListChanged);
+    todo.bindTodoCallback('todoTitleChanged', onTodoTitleChanged);
     project.addTodo(todo);
     return todo;
   }
@@ -109,14 +111,8 @@ const controller = (() => {
         })),
         notes: todo.getNotes()
       };
-      todo.bindOnTaskListChanged(onTaskListChanged);
-      todo.bindOnTodoChanged(onTodoChanged);
       view.addTodoCard(todoObj);
     });
-  };
-
-  const addSubmitTodoEvent = () => {
-    view.bindSubmitTodo(handleSubmitTodo);
   };
 
   const refreshTodoList = () => {
@@ -135,10 +131,6 @@ const controller = (() => {
     refreshTodoList();
   };
 
-  const onTodoChanged = () => {
-    refreshTodoList();
-  }
-
   const onProjectListChanged = () => {
     view.resetProjectList();
     user.getProjects().forEach(project => {
@@ -150,11 +142,24 @@ const controller = (() => {
     loadNewProject(id);
   };
 
-  const onProjectNameChanged = () => {
+  const onTodoTitleChanged = (todoId) => {
+    const project = user.getProjectById(currentProjectId);
+    const todo = project.getTodoById(todoId);
+    view.updateText(`#todo-${todo.getId()} h2`, todo.getTitle());
+  }
 
+  // Call onProjectListChanged too to update the changed project name in 
+  // the sidebar.
+  const onProjectNameChanged = () => {
+    view.updateText('#project-title', user.getProjectById(currentProjectId).getName());
+    onProjectListChanged();
   };
 
-  const handleSubmitTask = (projectId, todoId, taskName) => {
+  const onProjectDescChanged = () => {
+    view.updateText('#project-description', user.getProjectById(currentProjectId).getDescription());
+  }
+
+  const handleAddTask = (projectId, todoId, taskName) => {
     const projectTarget = user.getProjectById(projectId);
     const todoTarget = projectTarget.getTodoById(todoId);
     addNewTask(todoTarget, taskName, todoTarget.getTaskIdCounter());
@@ -214,19 +219,59 @@ const controller = (() => {
     project.editName(newName);
   };
 
-  view.bindAddTask(handleSubmitTask);
-  view.bindAddTodo(handleAddTodo);
-  view.bindAddProject(handleAddProject);
+  const handleEditProjectDesc = (newDesc) => {
+    const project = user.getProjectById(currentProjectId);
+    project.editDescription(newDesc);
+  }
+
+  const handleEditTodoTitle = (newTitle, id) => {
+    const project = user.getProjectById(currentProjectId);
+    const todo = project.getTodoById(id);
+    todo.editTitle(newTitle);
+  };
+
+  const handleEditTodoDesc = (newDesc, id) => {
+    const project = user.getProjectById(currentProjectId);
+    const todo = project.getTodoById(id);
+    todo.editDescription(newDesc);
+  };
+
+  const handleEditTodoDue = (newDate, id) => {
+    const project = user.getProjectById(currentProjectId);
+    const todo = project.getTodoById(id);
+    todo.editDueDate(newDate);
+  };
+
+  const handleEditTodoPriority = (newPriority, id) => {
+    const project = user.getProjectById(currentProjectId);
+    const todo = project.getTodoById(id);
+    todo.editPriority(newPriority);
+  };
+
+  const handleEditTodoNotes = (newNotes, id) => {
+    const project = user.getProjectById(currentProjectId);
+    const todo = project.getTodoById(id);
+    todo.editNotes(newNotes);
+  };
+ 
   user.bindProjectListChanged(onProjectListChanged);
-  view.bindChangeProject(onProjectSwitch);
-  view.bindToggleTask(handleTaskToggle);
-  view.bindDeleteProject(handleDeleteProject);
-  view.bindDeleteTask(handleDeleteTask);
-  view.bindDeleteTodo(handleDeleteTodo);
-  view.bindMinimizeTodo(handleMinimizeTodo);
-  view.bindGetCurrentProjectId(getCurrentProjectId);
-  view.bindEditProjectName(handleEditProjectName);
-  
+  view.bindCallback('getCurrentId', getCurrentProjectId);
+  view.bindCallback('changeProject', onProjectSwitch);
+  view.bindCallback('addProject', handleAddProject);
+  view.bindCallback('addTodo', handleAddTodo);
+  view.bindCallback('addTask', handleAddTask);
+  view.bindCallback('deleteProject', handleDeleteProject);
+  view.bindCallback('deleteTodo', handleDeleteTodo);
+  view.bindCallback('deleteTask', handleDeleteTask);
+  view.bindCallback('minimizeTodo', handleMinimizeTodo);
+  view.bindCallback('toggleTask', handleTaskToggle);
+  view.bindCallback('editProjectName', handleEditProjectName);
+  view.bindCallback('editProjectDesc', handleEditProjectDesc);
+  view.bindCallback('editTodoTitle', handleEditTodoTitle);
+  view.bindCallback('editTodoDue', handleEditTodoDue);
+  view.bindCallback('editTodoPriority', handleEditTodoPriority);
+  view.bindCallback('editTodoDesc', handleEditTodoDesc);
+  view.bindCallback('editTodoNotes', handleEditTodoNotes); 
 
   return { initializeView };
 })();
