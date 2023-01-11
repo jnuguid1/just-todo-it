@@ -7,8 +7,8 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   let isMinimized = false;
 
   const getTaskById = (id) => {
-    return checkList.find(task => task.getId() === id);
-  }
+    return checkList.find((task) => task.getId() === id);
+  };
   const getTaskIdCounter = () => {
     return taskIdCounter;
   };
@@ -35,7 +35,7 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   };
   const getCheckList = () => {
     return checkList;
-  }
+  };
   const editTitle = (newTitle) => {
     title = newTitle;
     onTodoTitleChanged(id);
@@ -46,7 +46,7 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   };
   const editPriority = (newPriority) => {
     priority = newPriority;
-  }
+  };
   const editDueDate = (newDueDate) => {
     dueDate = newDueDate;
   };
@@ -75,29 +75,29 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
 
   const bindTodoCallback = (event, callback) => {
     switch (event) {
-      case 'taskListChanged':
+      case "taskListChanged":
         onTaskListChanged = callback;
         break;
-      case 'todoTitleChanged':
+      case "todoTitleChanged":
         onTodoTitleChanged = callback;
         break;
-      case 'todoDescChanged':
+      case "todoDescChanged":
         onTodoDescChanged = callback;
         break;
-      case 'todoDueDateChanged':
+      case "todoDueDateChanged":
         onTodoDueDateChanged = callback;
         break;
-      case 'todoPriorityChanged':
+      case "todoPriorityChanged":
         onTodoPriorityChanged = callback;
         break;
-      case 'todoNotesChanged':
+      case "todoNotesChanged":
         onoTodoNotesChanged = callback;
         break;
       default:
-        console.error('bindTodoCallback error');
+        console.error("bindTodoCallback error");
     }
-  }
-  
+  };
+
   return {
     getTaskById,
     getTaskIdCounter,
@@ -119,7 +119,7 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
     toggleMinimize,
     checkIsMinimized,
     bindTodoCallback,
-  }
+  };
 };
 
 export default todoFactory;

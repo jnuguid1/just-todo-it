@@ -13,9 +13,9 @@ const user = (() => {
 
   const getProjects = () => {
     return projects;
-  }
+  };
   const getProjectById = (id) => {
-    return projects.find(project => project.getId() === id);
+    return projects.find((project) => project.getId() === id);
   };
   const addProject = (project) => {
     projects.push(project);
@@ -32,15 +32,15 @@ const user = (() => {
 
   const bindProjectListChanged = (callback) => {
     onProjectsListChanged = callback;
-  }
+  };
 
-  return { 
-    getProjects, 
-    addProject, 
-    removeProject, 
+  return {
+    getProjects,
+    addProject,
+    removeProject,
     bindProjectListChanged,
     getProjectById,
-    getProjectIdCounter 
+    getProjectIdCounter,
   };
 })();
 

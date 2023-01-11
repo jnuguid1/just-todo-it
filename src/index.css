@@ -1,27 +1,33 @@
 :root {
   --primary-color: #fecaca;
   /* --secondary-color: hsl(0, 83%, 98%); */
-  --secondary-color: #F8FFE8;
+  --secondary-color: #f8ffe8;
   --grey-text-color: #9a9a9a;
   --light-grey: #cdcdcd;
   --lighter-grey: #f1f1f1;
-  --card-color: #FFFFFF;
-  --urgent-primary-color: #FF0000;
-  --urgent-secondary-color: #FFDEDE;
+  --card-color: #ffffff;
+  --urgent-primary-color: #ff0000;
+  --urgent-secondary-color: #ffdede;
   --unimportant-primary-color: #868686;
-  --unimportant-secondary-color: #D5D5D5;
-  --normal-primary-color: #00952A;
-  --normal-secondary-color: #94FFB2;
+  --unimportant-secondary-color: #d5d5d5;
+  --normal-primary-color: #00952a;
+  --normal-secondary-color: #94ffb2;
   --error-color: #bd0303;
   --project-title-height: 33.315px;
-  --project-description-height:36.82240px;
+  --project-description-height: 36.8224px;
   --pointer: pointer;
   font-size: 16px;
-  font-family: 'Nunito', 'Roboto', 'sans-serif';
+  font-family: "Nunito", "Roboto", "sans-serif";
   user-select: none;
 }
 
-body, h1, h2, h3, p, ul, li {
+body,
+h1,
+h2,
+h3,
+p,
+ul,
+li {
   margin: 0;
   padding: 0;
 }
@@ -30,7 +36,9 @@ li {
   list-style: none;
 }
 
-#project-title, #project-description, .todo-card h2,
+#project-title,
+#project-description,
+.todo-card h2,
 .todo-card p {
   cursor: pointer;
 }
@@ -109,7 +117,7 @@ li {
   align-content: center;
 }
 
-#container{
+#container {
   display: grid;
   grid-template-columns: 1.1fr 5fr;
   height: 100vh;
@@ -144,7 +152,7 @@ li {
   font-weight: 600;
 }
 
-#sidebar h2:nth-child(n+1) {
+#sidebar h2:nth-child(n + 1) {
   margin-bottom: 16px;
 }
 
@@ -286,14 +294,14 @@ li {
   width: 60%;
 }
 
-#todo-form-container input, 
+#todo-form-container input,
 #todo-form-container select,
 #todo-form-container textarea {
   font-size: 1rem;
   padding: 4px;
 }
 
-#todo-form-container input:nth-child(n+3), 
+#todo-form-container input:nth-child(n + 3),
 #todo-form-container select,
 #todo-form-container textarea {
   margin-top: 16px;
@@ -314,7 +322,7 @@ li {
   font-size: 1rem;
 }
 
-#todo-form-container option:nth-child(n+1) {
+#todo-form-container option:nth-child(n + 1) {
   color: black;
 }
 
@@ -355,7 +363,7 @@ li {
 
 #project-form-container button {
   padding: 0px 8px;
-  height: 37px
+  height: 37px;
 }
 
 .circle-filled {
@@ -401,7 +409,7 @@ li {
 }
 
 .project-list-container {
-  display: flex; 
+  display: flex;
   gap: 48px;
   align-items: center;
   margin-bottom: 8px;
