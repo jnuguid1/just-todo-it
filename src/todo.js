@@ -3,6 +3,7 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   let taskIdCounter = 0;
   let onTaskListChanged = () => {};
   let onTodoTitleChanged = () => {};
+  let onTodoDescChanged = () => {};
   let isMinimized = false;
 
   const getTaskById = (id) => {
@@ -41,6 +42,7 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   };
   const editDescription = (newDesc) => {
     description = newDesc;
+    onTodoDescChanged(id);
   };
   const editPriority = (newPriority) => {
     priority = newPriority;
@@ -65,7 +67,7 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   };
   const toggleMinimize = () => {
     isMinimized = !isMinimized;
-    onTaskListChange();
+    onTaskListChanged();
   };
   const checkIsMinimized = () => {
     return isMinimized;

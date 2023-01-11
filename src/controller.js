@@ -29,6 +29,7 @@ const controller = (() => {
     const todo = todoFactory(id, title, desc, dueDate, priority, notes);
     todo.bindTodoCallback('taskListChanged', onTaskListChanged);
     todo.bindTodoCallback('todoTitleChanged', onTodoTitleChanged);
+    todo.bindTodoCallback('todoDescChanged', onTodoDescChanged);
     project.addTodo(todo);
     return todo;
   }
@@ -142,10 +143,24 @@ const controller = (() => {
     loadNewProject(id);
   };
 
-  const onTodoTitleChanged = (todoId) => {
+  const getTodo = (todoId) => {
     const project = user.getProjectById(currentProjectId);
-    const todo = project.getTodoById(todoId);
-    view.updateText(`#todo-${todo.getId()} h2`, todo.getTitle());
+    return project.getTodoById(todoId);
+  };
+
+  const getTask = (todoId, taskId) => {
+    const todo = getTodo(todoId);
+    return todo.getTaskById(taskId);
+  }
+
+  const onTodoTitleChanged = (todoId) => {
+    const todo = getTodo(todoId);
+    view.updateText(`#todo-${todo.getId()} todo-title`, todo.getTitle());
+  };
+
+  const onTodoDescChanged = (todoId) => {
+    const todo = getTodo(todoId);
+    view.updateText(`#todo-${todo.getId()} .todo-description`, todo.getDescription());
   }
 
   // Call onProjectListChanged too to update the changed project name in 
@@ -184,10 +199,7 @@ const controller = (() => {
   };
 
   const handleTaskToggle = (todoId, taskId) => {
-    const project = user.getProjectById(currentProjectId);
-    const todo = project.getTodoById(todoId);
-    const task = todo.getTaskById(taskId);
-    task.toggleComplete();
+    getTask(todoId, taskId).toggleComplete();
   };
 
   const handleDeleteProject = (projectId) => {
@@ -196,22 +208,17 @@ const controller = (() => {
   };
 
   const handleDeleteTodo = (todoId) => {
-    const project = user.getProjectById(currentProjectId);
-    const todo = project.getTodoById(todoId);
+    const todo = getTodo(todoId);
     project.removeTodo(todo);
   };
 
   const handleDeleteTask = (todoId, taskId) => {
-    const project = user.getProjectById(currentProjectId);
-    const todo = project.getTodoById(todoId);
-    const task = todo.getTaskById(taskId);
+    const task = todo.getTaskById(todoId, taskId);
     todo.removeTask(task);
   };
 
   const handleMinimizeTodo = (todoId) => {
-    const project = user.getProjectById(currentProjectId);
-    const todo = project.getTodoById(todoId);
-    todo.toggleMinimize();
+    getTodo(todoId).toggleMinimize();
   };
 
   const handleEditProjectName = (newName) => {
@@ -225,33 +232,23 @@ const controller = (() => {
   }
 
   const handleEditTodoTitle = (newTitle, id) => {
-    const project = user.getProjectById(currentProjectId);
-    const todo = project.getTodoById(id);
-    todo.editTitle(newTitle);
+    getTodo(id).editTitle(newTitle);
   };
 
   const handleEditTodoDesc = (newDesc, id) => {
-    const project = user.getProjectById(currentProjectId);
-    const todo = project.getTodoById(id);
-    todo.editDescription(newDesc);
+    getTodo(id).editDescription(newDesc);
   };
 
   const handleEditTodoDue = (newDate, id) => {
-    const project = user.getProjectById(currentProjectId);
-    const todo = project.getTodoById(id);
-    todo.editDueDate(newDate);
+    getTodo(id).editDueDate(newDate);
   };
 
   const handleEditTodoPriority = (newPriority, id) => {
-    const project = user.getProjectById(currentProjectId);
-    const todo = project.getTodoById(id);
-    todo.editPriority(newPriority);
+    getTodo(id).editPriority(newPriority);
   };
 
   const handleEditTodoNotes = (newNotes, id) => {
-    const project = user.getProjectById(currentProjectId);
-    const todo = project.getTodoById(id);
-    todo.editNotes(newNotes);
+    getTodo(id).editNotes(newNotes);
   };
  
   user.bindProjectListChanged(onProjectListChanged);

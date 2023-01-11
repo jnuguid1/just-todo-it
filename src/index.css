@@ -14,7 +14,7 @@
   --normal-secondary-color: #94FFB2;
   --error-color: #bd0303;
   --project-title-height: 33.315px;
-  --project-description-height: 21.041px;
+  --project-description-height:36.82240px;
   --pointer: pointer;
   font-size: 16px;
   font-family: 'Nunito', 'Roboto', 'sans-serif';
@@ -30,7 +30,8 @@ li {
   list-style: none;
 }
 
-#project-title, #project-description, .todo-card h2 {
+#project-title, #project-description, .todo-card h2,
+.todo-card p {
   cursor: pointer;
 }
 
@@ -165,7 +166,8 @@ li {
 
 #project-desc-edit-input,
 #project-title-edit-input,
-.todo-title-edit-input {
+.todo-title-edit-input,
+.todo-desc-edit-input {
   padding: 0;
   border: none;
 }
@@ -186,10 +188,21 @@ li {
   font-size: 1rem;
 }
 
+.todo-desc-edit-input {
+  resize: none;
+  font-size: 1rem;
+  height: var(--todo-description-height);
+}
+
 #project-title-edit-input:focus,
 #project-desc-edit-input:focus,
-.todo-title-edit-input {
+.todo-title-edit-input:focus,
+.todo-desc-edit-input:focus {
   outline: none;
+}
+
+.card-top-section p {
+  height: var(--todo-description-height);
 }
 
 .todo-card {

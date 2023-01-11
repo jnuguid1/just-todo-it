@@ -64,7 +64,9 @@ const viewHelpers = (() => {
 
   function createTextAreaForm(id, placeholder, container) {
     const input = document.createElement('textarea');
-    input.id = id;
+    if (id !== 'none') {
+      input.id = id;
+    }
     input.placeholder = placeholder;
     for (let i = 3; i < arguments.length; i++) {
       input.classList.add(`${arguments[i]}`);

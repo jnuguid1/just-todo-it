@@ -21,7 +21,7 @@ const view = (() => {
   let editTodoTitleEvent  = () => {};
   let editTodoDueEvent = () => {};
   let editTodoPriorityEvent  = () => {};
-  let editTodoDescriptionEvent = () => {};
+  let editTodoDescEvent = () => {};
   let editTodoNotesEvent = () => {};
 
   const resetProjectView = () => {
@@ -70,6 +70,7 @@ const view = (() => {
 
   const addInputEditListeners = (text, input, handler, id) => {
     text.addEventListener('click', () => {
+      input.value = text.textContent;
       helper.toggleVisibility(text, input);
       input.focus();
     });
@@ -129,9 +130,8 @@ const view = (() => {
 
   const setTodoTitle = (todoId, title, todoCard, cardSection) => {
     const titleContainer = helper.createDiv('title-container');
-    const todoTitle = helper.createText(titleContainer, 'h2', title, 'font-medium');
-    const todoTitleEditInput = helper.createInputForm('none', 'Enter a new title', titleContainer, 'hidden');
-    todoTitleEditInput.classList.add('todo-title-edit-input');
+    const todoTitle = helper.createText(titleContainer, 'h2', title, 'font-medium', 'todo-title');
+    const todoTitleEditInput = helper.createInputForm('none', 'Enter a new title', titleContainer, 'hidden', 'todo-title-edit-input');
     todoTitleEditInput.size = '10';
     addInputEditListeners(todoTitle, todoTitleEditInput, editTodoTitleEvent, todoId);
 
@@ -164,7 +164,7 @@ const view = (() => {
     return selectionContainer;
   };
 
-  const setTodoStatus = (dueDate, priority, todoCard) => {
+  const setTodoStatus = (todoId, dueDate, priority, todoCard) => {
     const status = helper.createDiv('mb-16', 'status-container')
     helper.createText(status, 'p', `Due: ${dueDate}`, 'font-small');
     const priorityLabel = helper.createText(status, 'p', priority, 'font-small');
@@ -178,8 +178,18 @@ const view = (() => {
     todoCard.appendChild(status);
   };
 
-  const setTodoDescription = (desc, todoCard) => {
-    helper.createText(todoCard, 'p', desc, 'mb-8');
+  const setTodoDescription = (todoId, desc, todoCard) => {
+    const todoDescription = 
+      helper.createText(
+        todoCard, 
+        'p', 
+        desc, 
+        'mb-8', 
+        'todo-description'
+      );
+    const todoDescEditInput = helper.createTextAreaForm('none', 'Enter a new todo description', todoCard, 'todo-desc-edit-input', 'hidden');
+    todoDescEditInput.cols='29';
+    addInputEditListeners(todoDescription, todoDescEditInput, editTodoDescEvent, todoId);
   };
 
   const setTask = (task, container) => {
@@ -254,9 +264,12 @@ const view = (() => {
     })
   }
 
-  const setNotes = (notes, todoCard) => {
+  const setNotes = (todoId, notes, todoCard) => {
     helper.createText(todoCard, 'h3', 'Notes', 'notes-heading');
-    helper.createText(todoCard, 'p', notes);
+    const todoNotes = helper.createText(todoCard, 'p', notes, 'todo-notes');
+    const todoNotesEditInput = helper.createTextAreaForm('none', 'Enter todo notes', todoCard, 'todo-notes-edit-input', 'hidden');
+    todoNotesEditInput.cols='29';
+    addInputEditListeners(todoNotes, todoNotesEditInput, editTodoNotesEvent, todoId);
   };
 
   const addTodoCard = (todo) => {
@@ -269,11 +282,11 @@ const view = (() => {
       cardBottomSection.classList.add('hidden');
     }
     setTodoTitle(todo.todoId, todo.title, cardTopSection, cardBottomSection);
-    setTodoStatus(todo.due, todo.priority,cardTopSection);
-    setTodoDescription(todo.desc, cardTopSection);
+    setTodoStatus(todo.todoId, todo.due, todo.priority,cardTopSection);
+    setTodoDescription(todo.todoId, todo.desc, cardTopSection);
     setTodoTasks(todo.todoId, todo.tasks, cardBottomSection);
     setAddTaskButton(todo.projectId, todo.todoId, cardBottomSection);
-    setNotes(todo.notes, cardBottomSection);
+    setNotes(todo.todoId, todo.notes, cardBottomSection);
     todoCard.appendChild(cardTopSection);
     todoCard.appendChild(cardBottomSection);
 
@@ -467,7 +480,7 @@ const view = (() => {
         editTodoPriorityEvent = callback;
         break;
       case 'editTodoDesc':
-        editTodoDescriptionEvent = callback;
+        editTodoDescEvent = callback;
         break;
       case 'editTodoNotes':
         editTodoNotesEvent = callback;
