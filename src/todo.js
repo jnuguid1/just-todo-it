@@ -4,6 +4,10 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   let onTaskListChanged = () => {};
   let onTodoTitleChanged = () => {};
   let onTodoDescChanged = () => {};
+  let onTodoDueDateChanged = () => {};
+  let onTodoPriorityChanged = () => {};
+  let onoTodoNotesChanged = () => {};
+
   let isMinimized = false;
 
   const getTaskById = (id) => {
@@ -52,6 +56,7 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   };
   const editNotes = (newNotes) => {
     notes = newNotes;
+    onoTodoNotesChanged(id);
   };
   const addTask = (task) => {
     checkList.push(task);

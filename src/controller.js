@@ -32,6 +32,7 @@ const controller = (() => {
     todo.bindTodoCallback("taskListChanged", onTaskListChanged);
     todo.bindTodoCallback("todoTitleChanged", onTodoTitleChanged);
     todo.bindTodoCallback("todoDescChanged", onTodoDescChanged);
+    todo.bindTodoCallback("todoNotesChanged", onTodoNotesChanged);
     project.addTodo(todo);
     return todo;
   };
@@ -172,6 +173,14 @@ const controller = (() => {
     );
   };
 
+  const onTodoNotesChanged = (todoId) => {
+    const todo = getTodo(todoId);
+    view.updateText(
+      `#todo-${todo.getId()} .todo-notes`,
+      todo.getNotes()
+    );
+  };
+
   // Call onProjectListChanged too to update the changed project name in
   // the sidebar.
   const onProjectNameChanged = () => {
@@ -188,6 +197,7 @@ const controller = (() => {
       user.getProjectById(currentProjectId).getDescription()
     );
   };
+
 
   const handleAddTask = (projectId, todoId, taskName) => {
     const projectTarget = user.getProjectById(projectId);

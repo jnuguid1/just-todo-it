@@ -175,7 +175,8 @@ li {
 #project-desc-edit-input,
 #project-title-edit-input,
 .todo-title-edit-input,
-.todo-desc-edit-input {
+.todo-desc-edit-input,
+.todo-notes-edit-input {
   padding: 0;
   border: none;
 }
@@ -196,7 +197,8 @@ li {
   font-size: 1rem;
 }
 
-.todo-desc-edit-input {
+.todo-desc-edit-input,
+.todo-notes-edit-input {
   resize: none;
   font-size: 1rem;
   height: var(--todo-description-height);
@@ -205,7 +207,8 @@ li {
 #project-title-edit-input:focus,
 #project-desc-edit-input:focus,
 .todo-title-edit-input:focus,
-.todo-desc-edit-input:focus {
+.todo-desc-edit-input:focus,
+.todo-notes-edit-input:focus {
   outline: none;
 }
 

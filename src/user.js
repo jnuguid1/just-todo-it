@@ -1,7 +1,3 @@
-import todoFactory from "./todo";
-import taskFactory from "./task";
-import projectFactory from "./project";
-
 const user = (() => {
   const projects = [];
   let projectIdCounter = 0;
