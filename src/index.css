@@ -99,6 +99,14 @@ li {
   margin-bottom: 48px;
 }
 
+.mr-8 {
+  margin-right: 8px;
+}
+
+.mr-16 {
+  margin-right: 16px;
+}
+
 .inline {
   display: inline;
 }
@@ -176,7 +184,8 @@ li {
 #project-title-edit-input,
 .todo-title-edit-input,
 .todo-desc-edit-input,
-.todo-notes-edit-input {
+.todo-notes-edit-input,
+.task-name-edit-input {
   padding: 0;
   border: none;
 }
@@ -208,7 +217,8 @@ li {
 #project-desc-edit-input:focus,
 .todo-title-edit-input:focus,
 .todo-desc-edit-input:focus,
-.todo-notes-edit-input:focus {
+.todo-notes-edit-input:focus,
+.task-name-edit-input:focus {
   outline: none;
 }
 
@@ -228,6 +238,26 @@ li {
   display: flex;
   align-items: center;
   gap: 24px;
+}
+
+.status-form-container button {
+  padding: 6px;
+  border-radius: 8px;
+  border: none;
+  border-width: 1px;
+  border-color: var(--grey-text-color);
+  border-style: solid;
+  cursor: pointer;
+}
+
+.status-container select {
+  padding: 4px;
+}
+
+.due-date-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .todo-card h3 {

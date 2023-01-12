@@ -77,8 +77,14 @@ const viewHelpers = (() => {
   function createDateTimeInput(id, container) {
     const input = document.createElement("input");
     input.type = "datetime-local";
-    input.id = id;
+    if (id !== "none") {
+      input.id = id;
+    }
+    for (let i = 2; i < arguments.length; i++) {
+      input.classList.add(`${arguments[i]}`);
+    }
     container.appendChild(input);
+    return input;
   }
 
   function createButtonForm(element, id, text, container) {
@@ -88,7 +94,9 @@ const viewHelpers = (() => {
     } else if (element === "button") {
       btn = document.createElement("button");
     }
-    btn.id = id;
+    if (id !== "none") {
+      btn.id = id;
+    }
     btn.textContent = text;
     for (let i = 4; i < arguments.length; i++) {
       btn.classList.add(`${arguments[i]}`);
@@ -99,7 +107,9 @@ const viewHelpers = (() => {
 
   function createSelectForm(id, container, text) {
     const select = document.createElement("select");
-    select.id = id;
+    if (id !== "none") {
+      select.id = id;
+    }
     const option = document.createElement("option");
     option.value = "";
     option.textContent = text;
@@ -111,6 +121,7 @@ const viewHelpers = (() => {
       select.appendChild(options);
     }
     container.appendChild(select);
+    return select;
   }
 
   function createText(container, element, text) {
@@ -138,6 +149,23 @@ const viewHelpers = (() => {
     }
   }
 
+  function removeAllChildren(parent) {
+    let child = parent.lastElementChild;
+    while (child) {
+      parent.removeChild(child);
+      child = parent.lastElementChild;
+    }
+  }
+  
+  // Skip 'numToSkip' number of last child elements
+  function removeChildrenSkipLast(parent, numToSkip) {
+    let child = parent.firstElementChild;
+    while (child && parent.children.length > numToSkip) {
+      parent.removeChild(child);
+      child = parent.firstElementChild;
+    }
+  }
+
   return {
     createDiv,
     createIdDiv,
@@ -152,6 +180,8 @@ const viewHelpers = (() => {
     createText,
     createIcon,
     toggleVisibility,
+    removeAllChildren,
+    removeChildrenSkipLast
   };
 })();
 

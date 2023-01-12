@@ -33,6 +33,8 @@ const controller = (() => {
     todo.bindTodoCallback("todoTitleChanged", onTodoTitleChanged);
     todo.bindTodoCallback("todoDescChanged", onTodoDescChanged);
     todo.bindTodoCallback("todoNotesChanged", onTodoNotesChanged);
+    todo.bindTodoCallback("todoDueDateChanged", onTodoDueDateChanged);
+    todo.bindTodoCallback("todoPriorityChanged", onTodoPriorityChanged);
     project.addTodo(todo);
     return todo;
   };
@@ -40,6 +42,7 @@ const controller = (() => {
   const addNewTask = (todo, name, id) => {
     const task = taskFactory(name, id);
     todo.addTask(task);
+    task.bindOnTaskNameChanged(onTaskNameChanged);
     return task;
   };
 
@@ -162,7 +165,7 @@ const controller = (() => {
 
   const onTodoTitleChanged = (todoId) => {
     const todo = getTodo(todoId);
-    view.updateText(`#todo-${todo.getId()} todo-title`, todo.getTitle());
+    view.updateText(`#todo-${todo.getId()} .todo-title`, todo.getTitle());
   };
 
   const onTodoDescChanged = (todoId) => {
@@ -179,6 +182,28 @@ const controller = (() => {
       `#todo-${todo.getId()} .todo-notes`,
       todo.getNotes()
     );
+  };
+
+  const onTodoDueDateChanged = (todoId) => {
+    const todo = getTodo(todoId);
+    view.updateText(
+      `#todo-${todo.getId()} .todo-due-date`,
+      `Due: ${todo.getDueDate().replace("T", " ")}`
+    )
+  }
+
+  const onTodoPriorityChanged = (todoId) => {
+    const todo = getTodo(todoId);
+    view.updatePriority(
+      `#todo-${todo.getId()} .todo-priority`,
+      todo.getPriority()
+    );
+  }
+
+  // Temporary implementation. Need implementation that does not
+  // involve resetting whole todolist
+  const onTaskNameChanged = (todoId, taskId) => {
+    refreshTodoList();
   };
 
   // Call onProjectListChanged too to update the changed project name in
@@ -236,7 +261,7 @@ const controller = (() => {
 
   const handleDeleteTodo = (todoId) => {
     const todo = getTodo(todoId);
-    project.removeTodo(todo);
+    user.getProjectById(currentProjectId).removeTodo(todo);
   };
 
   const handleDeleteTask = (todoId, taskId) => {
@@ -278,6 +303,10 @@ const controller = (() => {
     getTodo(id).editNotes(newNotes);
   };
 
+  const handleEditTaskName = (newName, todoId, taskId) => {
+    getTask(todoId, taskId).editName(newName);
+  };
+
   user.bindProjectListChanged(onProjectListChanged);
   view.bindCallback("getCurrentId", getCurrentProjectId);
   view.bindCallback("changeProject", onProjectSwitch);
@@ -296,6 +325,7 @@ const controller = (() => {
   view.bindCallback("editTodoPriority", handleEditTodoPriority);
   view.bindCallback("editTodoDesc", handleEditTodoDesc);
   view.bindCallback("editTodoNotes", handleEditTodoNotes);
+  view.bindCallback("editTaskName", handleEditTaskName);
 
   return { initializeView };
 })();

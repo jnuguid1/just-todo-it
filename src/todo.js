@@ -6,7 +6,7 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   let onTodoDescChanged = () => {};
   let onTodoDueDateChanged = () => {};
   let onTodoPriorityChanged = () => {};
-  let onoTodoNotesChanged = () => {};
+  let onTodoNotesChanged = () => {};
 
   let isMinimized = false;
 
@@ -50,13 +50,15 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
   };
   const editPriority = (newPriority) => {
     priority = newPriority;
+    onTodoPriorityChanged(id);
   };
   const editDueDate = (newDueDate) => {
     dueDate = newDueDate;
+    onTodoDueDateChanged(id);
   };
   const editNotes = (newNotes) => {
     notes = newNotes;
-    onoTodoNotesChanged(id);
+    onTodoNotesChanged(id);
   };
   const addTask = (task) => {
     checkList.push(task);
@@ -96,7 +98,7 @@ const todoFactory = (id, title, description, dueDate, priority, notes) => {
         onTodoPriorityChanged = callback;
         break;
       case "todoNotesChanged":
-        onoTodoNotesChanged = callback;
+        onTodoNotesChanged = callback;
         break;
       default:
         console.error("bindTodoCallback error");

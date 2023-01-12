@@ -1,3 +1,5 @@
+import { doc } from "prettier";
+import viewHelpers from "./view-helpers";
 import helper from "./view-helpers";
 
 const view = (() => {
@@ -23,27 +25,35 @@ const view = (() => {
   let editTodoPriorityEvent = () => {};
   let editTodoDescEvent = () => {};
   let editTodoNotesEvent = () => {};
+  let editTaskNameEvent = () => {};
 
-  const resetProjectView = () => {
-    let element = projectContainer.lastElementChild;
-    while (element) {
-      projectContainer.removeChild(element);
-      element = projectContainer.lastElementChild;
-    }
-    projectContainer.appendChild(helper.createIdDiv("todo-list"));
-    todoList = document.querySelector("#todo-list");
+  const setTodoList = () => {
+    todoList = helper.createIdDiv("todo-list");
+    projectContainer.appendChild(todoList);
   };
 
+  const resetProjectView = () => {
+    viewHelpers.removeAllChildren(projectContainer);
+  };
+
+  // Skip the last two elements which are the add project button and
+  // its corresponding form.
   const resetProjectList = () => {
-    let element = projectsList.firstElementChild;
-    while (element) {
-      if (element.id === "add-project-btn") {
-        break;
-      } else {
-        projectsList.removeChild(element);
-        element = projectsList.firstElementChild;
-      }
-    }
+    viewHelpers.removeChildrenSkipLast(projectsList, 2);
+  };
+
+  const setProjectDeleteIcon = (container, projectId) => {
+    const deleteProjectIcon = helper.createIcon(
+      container,
+      "fa-solid",
+      "fa-xmark",
+      "fa-lg",
+      "hidden"
+    );
+    deleteProjectIcon.addEventListener("click", () => {
+      deleteProjectEvent(projectId);
+    });
+    return deleteProjectIcon;
   };
 
   const setProjectListItem = (project, projectId) => {
@@ -53,12 +63,9 @@ const view = (() => {
       project
     );
     projectListItem.setAttribute("project-id", projectId);
-    const deleteProjectIcon = helper.createIcon(
-      projectListContainer,
-      "fa-solid",
-      "fa-xmark",
-      "fa-lg",
-      "hidden"
+    const deleteProjectIcon = setProjectDeleteIcon(
+      projectListContainer, 
+      projectId
     );
     projectsList.insertBefore(projectListContainer, addProjectButton);
     projectListItem.addEventListener("click", () => {
@@ -67,17 +74,14 @@ const view = (() => {
       }
     });
     projectListContainer.addEventListener("mouseenter", () => {
-      deleteProjectIcon.classList.remove("hidden");
+      viewHelpers.toggleVisibility(deleteProjectIcon);
     });
     projectListContainer.addEventListener("mouseleave", () => {
-      deleteProjectIcon.classList.add("hidden");
-    });
-    deleteProjectIcon.addEventListener("click", () => {
-      deleteProjectEvent(projectId);
+      viewHelpers.toggleVisibility(deleteProjectIcon);
     });
   };
 
-  const addInputEditListeners = (text, input, handler, id) => {
+  const addInputEditListeners = (text, input, handler, id1, id2) => {
     text.addEventListener("click", () => {
       input.value = text.textContent;
       helper.toggleVisibility(text, input);
@@ -88,7 +92,7 @@ const view = (() => {
         if (input.value === "") {
           helper.toggleVisibility(text, input);
         } else {
-          handler(input.value, id);
+          handler(input.value, id1, id2);
           helper.toggleVisibility(text, input);
           input.value = "";
         }
@@ -97,6 +101,43 @@ const view = (() => {
         input.value = "";
       }
     });
+  };
+
+  const addDateEditListeners = (text, input, button, id, handler) => {
+    text.addEventListener("click", () => {
+      helper.toggleVisibility(input, button);
+      input.focus();
+    });
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        if (input.value !== "") {
+          handler(input.value, id);
+          helper.toggleVisibility(input, button);
+          input.value = "";
+        }
+      }
+    })
+    button.addEventListener("click", () => {
+      if (input.value !== "") {
+        handler(input.value, id);
+        helper.toggleVisibility(input, button);
+        input.value = "";
+      }
+    })
+  };
+
+  const addSelectionEditListeners = (text, input, id, handler) => {
+    text.addEventListener("click", () => {
+      helper.toggleVisibility(text, input);
+    });
+    input.addEventListener("change", () => {
+      if (input.value === '') {
+        helper.toggleVisibility(text, input);
+      } else {
+        handler(input.value, id);
+        helper.toggleVisibility(text, input);
+      }
+    })
   };
 
   // Need to append a br element because title and description were made inline-block.
@@ -126,8 +167,9 @@ const view = (() => {
     );
   };
 
-  const updateText = (elementId, text) => {
-    const element = document.querySelector(elementId);
+  // Element query is a css selector e.g. "todo-card todo-title"
+  const updateText = (elementQuery, text) => {
+    const element = document.querySelector(elementQuery);
     element.textContent = text;
   };
 
@@ -148,7 +190,7 @@ const view = (() => {
       "mb-48"
     );
     projectDescription.id = "project-description";
-    projectDescEditInput.size = "60";
+    projectDescEditInput.size = "90";
     addInputEditListeners(
       projectDescription,
       projectDescEditInput,
@@ -156,19 +198,9 @@ const view = (() => {
     );
   };
 
-  const setTodoList = () => {
-    todoList = helper.createIdDiv("todo-list");
-    projectContainer.appendChild(todoList);
-  };
-
+  // Skip the last element which is the add todo button container
   const resetTodos = () => {
-    const todoListItems = todoList.children;
-    const listLength = todoListItems.length - 1;
-    let i = 0;
-    while (i < listLength) {
-      todoList.removeChild(todoListItems[0]);
-      i++;
-    }
+    viewHelpers.removeChildrenSkipLast(todoList, 1);
   };
 
   const setTodoTitle = (todoId, title, todoCard, cardSection) => {
@@ -207,11 +239,11 @@ const view = (() => {
       titleContainer,
       cardSection
     );
-    floatingSelection.classList.add("hidden");
+    viewHelpers.toggleVisibility(floatingSelection);
     todoCard.appendChild(titleContainer);
 
     ellipsis.addEventListener("click", () => {
-      floatingSelection.classList.toggle("hidden");
+      viewHelpers.toggleVisibility(floatingSelection);
     });
   };
 
@@ -237,23 +269,89 @@ const view = (() => {
     return selectionContainer;
   }
 
-  const setTodoStatus = (todoId, dueDate, priority, todoCard) => {
-    const status = helper.createDiv("mb-16", "status-container");
-    helper.createText(status, "p", `Due: ${dueDate}`, "font-small");
-    const priorityLabel = helper.createText(
-      status,
+  function setPriorityClass(priorityTag, priority) {
+    priorityTag.classList.remove("priority-label-urgent");
+    priorityTag.classList.remove("priority-label-normal");
+    priorityTag.classList.remove("priority-label-unimportant");
+    if (priority.toLowerCase() === "urgent") {
+      priorityTag.classList.add("priority-label-urgent");
+    } else if (priority.toLowerCase() === "normal") {
+      priorityTag.classList.add("priority-label-normal");
+    } else if (priority.toLowerCase() === "unimportant") {
+      priorityTag.classList.add("priority-label-unimportant");
+    }
+  }
+
+  function updatePriority(elementQuery, text) {
+    const priorityTag = document.querySelector(elementQuery);
+    priorityTag.textContent = text;
+    setPriorityClass(priorityTag, text);
+  };
+
+  const setPriorityTag = (container, priority, todoId) => {
+    const priorityTag = helper.createText(
+      container,
       "p",
       priority,
-      "font-small"
+      "font-small",
+      "todo-priority"
     );
-    if (priority.toLowerCase() === "urgent") {
-      priorityLabel.classList.add("priority-label-urgent");
-    } else if (priority.toLowerCase() === "normal") {
-      priorityLabel.classList.add("priority-label-normal");
-    } else if (priority.toLowerCase() === "unimportant") {
-      priorityLabel.classList.add("priority-label-unimportant");
-    }
+    const prioritySelection = helper.createSelectForm(
+      'none', container, "Priority", "Urgent", "Normal", "Unimportant"
+    );
+    prioritySelection.classList.add("hidden");
+    setPriorityClass(priorityTag, priority);
+    addSelectionEditListeners(
+      priorityTag, 
+      prioritySelection, 
+      todoId, 
+      editTodoPriorityEvent
+    );
+  };
+
+  const setDueDateLabel = (container, formContainer, dueDate, todoId) => {
+    const dueDateText = helper.createText(
+      container, 
+      "p", 
+      `Due: ${dueDate}`,
+      "font-small",
+      "todo-due-date"
+    );
+    const dueDateEditInput = helper.createDateTimeInput(
+      'none', 
+      formContainer, 
+      "todo-date-input",
+      "hidden",
+      "mr-8"
+    );
+    const dateSubmitBtn = helper.createButtonForm(
+      'button',
+      'none',
+      "Submit",
+      formContainer,
+      'todo-date-submit-btn',
+      "hidden"
+    );
+    addDateEditListeners(
+      dueDateText, 
+      dueDateEditInput, 
+      dateSubmitBtn, 
+      todoId, 
+      editTodoDueEvent
+    );
+  };
+
+  // Todo status consists of the todo due date and priority
+  const setTodoStatus = (todoId, dueDate, priority, todoCard) => {
+    const status = helper.createDiv("mb-16", "status-container");
+    const statusFormContainer = helper.createDiv(
+      "mb-16", 
+      "status-form-container"
+    );
     todoCard.appendChild(status);
+    todoCard.appendChild(statusFormContainer);
+    setDueDateLabel(status, statusFormContainer, dueDate, todoId);
+    setPriorityTag(status, priority, todoId);
   };
 
   const setTodoDescription = (todoId, desc, todoCard) => {
@@ -280,9 +378,29 @@ const view = (() => {
     );
   };
 
-  const setTask = (task, container) => {
-    const taskName = helper.createText(container, "p", task);
-    return taskName;
+  const setTask = (todoId, taskId, taskName, container, isCompleted) => {
+    const taskNameElement = helper.createText(container, "p", taskName);
+    const taskEditNameInput = helper.createInputForm(
+      "none",
+      "Enter a new name",
+      container,
+      "task-name-edit-input",
+      "hidden"
+    );
+    addInputEditListeners(
+      taskNameElement, 
+      taskEditNameInput,
+      editTaskNameEvent,
+      todoId,
+      taskId
+    );
+    if (isCompleted) {
+      taskNameElement.classList.add("task-done");
+    } else {
+      taskNameElement.classList.remove("task-done");
+    }
+
+    return taskNameElement;
   };
 
   const setTaskCheckCircle = (todoId, container, taskElement, taskObj) => {
@@ -303,17 +421,19 @@ const view = (() => {
   const setTodoTasks = (todoId, tasks, todoCard) => {
     tasks.forEach((task) => {
       const taskContainer = helper.createDiv("task-container");
+      todoCard.appendChild(taskContainer);
       const taskNameCircleContainer = helper.createDiv(
         "task-name-circle-container"
       );
-      const taskElement = setTask(task.name, taskNameCircleContainer);
-      if (task.isCompleted) {
-        taskElement.classList.add("task-done");
-      } else {
-        taskElement.classList.remove("task-done");
-      }
-      setTaskCheckCircle(todoId, taskNameCircleContainer, taskElement, task);
       taskContainer.appendChild(taskNameCircleContainer);
+      const taskElement = setTask(
+        todoId,
+        task.id,
+        task.name, 
+        taskNameCircleContainer,
+        task.isCompleted
+      );
+      setTaskCheckCircle(todoId, taskNameCircleContainer, taskElement, task);
       const deleteProjectIcon = helper.createIcon(
         taskContainer,
         "fa-solid",
@@ -321,7 +441,6 @@ const view = (() => {
         "fa-lg",
         "hidden"
       );
-      todoCard.appendChild(taskContainer);
       const divider = helper.createDiv("checklist-divide");
       const hr = document.createElement("hr");
       divider.appendChild(hr);
@@ -348,6 +467,7 @@ const view = (() => {
       "add-task-button"
     );
     const taskFormContainer = helper.createDiv("hidden");
+    todoCard.appendChild(taskFormContainer);
     const taskForm = helper.createInputForm(
       "none",
       "Enter task name",
@@ -361,7 +481,6 @@ const view = (() => {
       taskFormContainer,
       "submit-task-btn"
     );
-    todoCard.appendChild(taskFormContainer);
     addTaskButton.addEventListener("click", () => {
       taskFormContainer.classList.toggle("hidden");
     });
@@ -402,6 +521,8 @@ const view = (() => {
     const todoCard = helper.createDiv("todo-card");
     const cardTopSection = helper.createDiv("card-top-section");
     const cardBottomSection = helper.createDiv("card-bottom-section");
+    todoCard.appendChild(cardTopSection);
+    todoCard.appendChild(cardBottomSection);
     todoCard.id = `todo-${todo.todoId}`;
     if (todo.isMinimized === true) {
       cardBottomSection.classList.add("hidden");
@@ -412,8 +533,6 @@ const view = (() => {
     setTodoTasks(todo.todoId, todo.tasks, cardBottomSection);
     setAddTaskButton(todo.projectId, todo.todoId, cardBottomSection);
     setNotes(todo.todoId, todo.notes, cardBottomSection);
-    todoCard.appendChild(cardTopSection);
-    todoCard.appendChild(cardBottomSection);
 
     const addTodoButton = document.querySelector("#todo-add-container");
     todoCardContainer.appendChild(todoCard);
@@ -648,6 +767,9 @@ const view = (() => {
       case "editTodoNotes":
         editTodoNotesEvent = callback;
         break;
+      case "editTaskName":
+        editTaskNameEvent = callback;
+        break;
       default:
         console.error("callback bind error");
     }
@@ -696,6 +818,7 @@ const view = (() => {
     setProjectListItem,
     setAddTodoButton,
     bindCallback,
+    updatePriority
   };
 })();
 
