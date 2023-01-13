@@ -265,7 +265,8 @@ const controller = (() => {
   };
 
   const handleDeleteTask = (todoId, taskId) => {
-    const task = todo.getTaskById(todoId, taskId);
+    const todo = getTodo(todoId);
+    const task = getTask(todoId, taskId);
     todo.removeTask(task);
   };
 

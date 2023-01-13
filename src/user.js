@@ -1,6 +1,7 @@
 const user = (() => {
   const projects = [];
   let projectIdCounter = 0;
+
   let onProjectsListChanged = () => {};
 
   const getProjectIdCounter = () => {
@@ -15,6 +16,7 @@ const user = (() => {
   };
   const addProject = (project) => {
     projects.push(project);
+    
     projectIdCounter += 1;
     onProjectsListChanged();
   };
