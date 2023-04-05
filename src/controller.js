@@ -4,6 +4,29 @@ import todoFactory from "./todo";
 import taskFactory from "./task";
 import view from "./view";
 import moment from "moment";
+import firebase from 'firebase/app';
+import { initializeApp } from 'firebase/app';
+import { 
+  getAuth,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+} from 'firebase/auth';
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  limit,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+  doc,
+  serverTimestamp,
+} from 'firebase/firestore';
+import { getFirebaseConfig } from "./firebase-config";
 
 const controller = (() => {
   let currentProjectId = user.getProjectIdCounter();
@@ -18,12 +41,41 @@ const controller = (() => {
   const todoNotesDefault = "Add notes and any additional thoughts here";
   const taskNameDefault = "Make your first task";
 
+  const firebaseApp = initializeApp(getFirebaseConfig());
+
+  const signIn = async () => {
+    var provider = new GoogleAuthProvider();
+    await signInWithPopup(getAuth(), provider);
+  };
+
+  const signOut = async () => {
+    signOut(getAuth());
+  }
+
+  function getUserName() {
+    return getAuth().currentUser.displayName;
+  }
+
+  const saveProject = async (name, desc, id) => {
+    try {
+      await addDoc(collection(getFirestore(), 'projects'), {
+        name: getUserName(),
+        project: name,
+        desc,
+        id,
+      });
+    } catch (error) {
+      console.error('Error writing new message to Firebase Database', error);
+    }
+  }
+
   const addNewProject = (name, desc, id) => {
     const project = projectFactory(name, desc, id);
     project.bindOnTodoListChanged(onTodoListChanged);
     project.bindOnNameChanged(onProjectNameChanged);
     project.bindOnDescChanged(onProjectDescChanged);
     user.addProject(project);
+    saveProject(name, desc, id);
     return project;
   };
 
@@ -50,9 +102,7 @@ const controller = (() => {
     return currentProjectId;
   };
 
-  const initializeTodoList = () => {
-    view.setTodoList();
-    view.setAddTodoButton();
+  const addDefaults = () => {
     const firstProject = addNewProject(
       projectNameDefault,
       projectDescDefault,
@@ -68,6 +118,12 @@ const controller = (() => {
       todoNotesDefault
     );
     addNewTask(firstTodo, taskNameDefault, firstTodo.getTaskIdCounter());
+  }
+
+  const initializeTodoList = () => {
+    view.setTodoList();
+    view.setAddTodoButton();
+    // addDefaults();
   };
 
   const initializeSidebarView = () => {
@@ -328,7 +384,7 @@ const controller = (() => {
   view.bindCallback("editTodoNotes", handleEditTodoNotes);
   view.bindCallback("editTaskName", handleEditTaskName);
 
-  return { initializeView };
+  return { initializeView, signIn, signOut };
 })();
 
 export default controller;

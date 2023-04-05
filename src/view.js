@@ -1,6 +1,7 @@
 import { doc } from "prettier";
 import viewHelpers from "./view-helpers";
 import helper from "./view-helpers";
+import controller from "./controller";
 
 const view = (() => {
   let projectsList;
@@ -784,6 +785,8 @@ const view = (() => {
       "p-48"
     );
     helper.createText(sidebar, "h1", "Just Todo It", "font-large");
+    const signInButton = helper.createButtonForm('button', 'sign-in', 'Sign In', sidebar);
+    const signOutButton  = helper.createButtonForm('button', 'sign-out', 'Sign Out', sidebar);
     helper.createText(sidebar, "h2", "Projects", "font-medium", "m-16");
     projectsList = helper.createList(sidebar, "nav-list");
     projectsList.id = "projects-list";
@@ -803,6 +806,9 @@ const view = (() => {
       projectFormContainer.classList.toggle("flex");
       projectFormContainer.classList.toggle("hidden");
     });
+
+    signInButton.addEventListener("click", () => {controller.signIn()});
+    signOutButton.addEventListener("click", () => {controller.signOut()});
   };
 
   return {
