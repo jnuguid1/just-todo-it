@@ -18,6 +18,8 @@ import {
   collection,
   addDoc,
   query,
+  getDocs,
+  where,
   orderBy,
   limit,
   onSnapshot,
@@ -50,10 +52,16 @@ const controller = (() => {
 
   const signOut = async () => {
     signOut(getAuth());
-  }
+  };
 
   function getUserName() {
     return getAuth().currentUser.displayName;
+  };
+
+  const loadProjects = async () => {
+    const projectsQuery = query(collection(getFirestore(), 'projects'));
+    const querySnapshot = await getDocs(projectsQuery);
+    return querySnapshot;
   }
 
   const saveProject = async (name, desc, id) => {
@@ -67,7 +75,7 @@ const controller = (() => {
     } catch (error) {
       console.error('Error writing new message to Firebase Database', error);
     }
-  }
+  };
 
   const addNewProject = (name, desc, id) => {
     const project = projectFactory(name, desc, id);
@@ -127,7 +135,8 @@ const controller = (() => {
   };
 
   const initializeSidebarView = () => {
-    view.setProjectListItem(projectNameDefault, currentProjectId);
+    //loadProjects();
+    //view.setProjectListItem(projectNameDefault, currentProjectId);
   };
 
   const loadProjectInfo = (name, desc) => {
