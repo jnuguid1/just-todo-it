@@ -1,4 +1,4 @@
 # just-todo-it
 
-A project outlined by [The Odin Project](https://www.theodinproject.com/lessons/node-path-javascript-todo-list)  
+A to-do list web application featuring projects, to-do lists and checklists built in JavaScript
 Live Demo [HERE](https://jnuguid1.github.io/just-todo-it/)
